@@ -44,3 +44,18 @@ Tarjeta VISA debe ingresar el número de la tarjeta, nombre y apellido del Titul
 de vencimiento (MM/AAAA) y CVC.
 * Debe ingresar cuando quiere recibirlo: “Lo antes posible” o una fecha/hora de
 recepción).
+
+### Pruebas de aceptacion
+* Probar realizar un Pedido de “lo que sea” en efectivo “lo antes posible” (pasa)
+* Probar realizar un Pedido de “lo que sea” con tarjeta “lo antes posible” (pasa)
+* Probar realizar un Pedido de “lo que sea” programando la fecha/hora de entrega (pasa)
+* Probar realizar un Pedido de “lo que sea” con una tarjeta inválida (falla)
+* Probar realizar un Pedido de “lo que sea” con una tarjeta MasterCard (falla)
+* Probar realizar un Pedido de “lo que sea” en efectivo sin indicar el monto a pagar (falla)
+* Probar realizar un Pedido de “lo que sea” programando una fecha/hora de entrega no válida
+(falla)
+* Probar realizar un Pedido de “lo que sea” sin especificar qué buscar (falla)
+* Probar realizar un Pedido de “lo que sea” adjuntando una foto (pasa)
+* Probar realizar un Pedido de “lo que sea” sin indicar la dirección del comercio (falla)
+* Probar realizar un Pedido de “lo que sea” seleccionando la dirección del comercio en el mapa
+interactivo (pasa)
