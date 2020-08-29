@@ -32,3 +32,15 @@ domicilio que no está disponible en los comercios adheridos
 * Se debe indicar qué debe buscar el Cadete con un campo de texto.
 * Se puede adjuntar opcionalmente una foto en formato JPG con un tamaño
 máximo de 5 MB.
+* Se debe indicar la dirección del comercio en forma textual (calle, número, ciudad
+y referencia opcional en formato de texto) o seleccionando un punto en un mapa
+interactivo de Google Maps.
+* Se debe indicar la dirección de entrega (calle, número, ciudad y referencia
+opcional en formato de texto). La ciudad podrá ser seleccionada de un listado de
+Ciudades disponibles.
+* Se debe seleccionar la forma de pago: Efectivo o Tarjeta VISA, en caso de haber
+seleccionado pago en Efectivo el monto con el que va a pagar. En caso de seleccionar
+Tarjeta VISA debe ingresar el número de la tarjeta, nombre y apellido del Titular, fecha
+de vencimiento (MM/AAAA) y CVC.
+* Debe ingresar cuando quiere recibirlo: “Lo antes posible” o una fecha/hora de
+recepción).
