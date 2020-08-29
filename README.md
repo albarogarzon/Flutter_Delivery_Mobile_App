@@ -19,11 +19,7 @@ Documento de estilo de código.
 
 ## Instrucciones
 -        Seleccionar una User Story a implementar de entre las siguientes opciones:
-
-Realizar Pedido a Comercio adherido (grupos pares)
-Realizar un Pedido de "lo que sea" (grupos impares)
+Realizar Pedido a Comercio adherido (grupos pares) o Realizar un Pedido de "lo que sea" (grupos impares)
 -        Seleccionar el conjunto de tecnologías para implementar la funcionalidad elegida.
-
 -        Buscar y seleccionar un documento de buenas prácticas y/o reglas de estilo de código para el lenguaje de programación a utilizar.
-
 -        Implementar la US siguiendo las reglas de estilo determinadas.
