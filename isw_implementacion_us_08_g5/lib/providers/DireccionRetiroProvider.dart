@@ -22,5 +22,6 @@ class DireccionRetiroProvider extends ChangeNotifier {
 
   void setTelefono(int telefono) {
     this._direccion.telefono = telefono;
+    notifyListeners();
   }
 }

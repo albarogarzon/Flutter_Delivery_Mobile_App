@@ -1,27 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:isw_implementacion_us_08_g5/models/Direccion.dart';
 import 'package:isw_implementacion_us_08_g5/providers/DireccionRetiroProvider.dart';
 import 'package:provider/provider.dart';
 
-class PedirLoQueSeaMainScreen extends StatefulWidget {
-  PedirLoQueSeaMainScreen();
-
-  @override
-  _PedirLoQueSeaMainScreenState createState() =>
-      _PedirLoQueSeaMainScreenState();
-}
-
-class _PedirLoQueSeaMainScreenState extends State<PedirLoQueSeaMainScreen> {
-  final List<String> listItemTitles = [
-    "Crea tu pedido",
-    "¿Qué buscamos?",
-    "¿Dónde lo buscamos?",
-    "¿Dónde lo entregamos?",
-    "¿Cuando queres recibirlo?",
-    "Forma de pago"
-  ];
-
+class PedirLoQueSeaMainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Direccion direccionRetiro =
@@ -31,46 +13,74 @@ class _PedirLoQueSeaMainScreenState extends State<PedirLoQueSeaMainScreen> {
       appBar: AppBar(
           title: Text("Pedí lo que sea"), backgroundColor: Colors.redAccent),
       body: Column(
+        verticalDirection: VerticalDirection.down,
+        textDirection: TextDirection.ltr,
+        mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
+            flex: 8,
             child: ListView(
               children: [
-                ListItem(
+                ListTile(
                   title: Text(
                     "Crea tu pedido",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                   ),
                 ),
                 _divider,
-                ListItem(
+                ListTile(
                   title: Text("¿Dónde lo buscamos?"),
                   subtitle: direccionRetiro.calle.isEmpty
                       ? null
                       : Text(direccionRetiro.calle),
-                  icon: Icon(Icons.edit, color: Colors.redAccent),
+                  trailing: Icon(Icons.edit, color: Colors.redAccent),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SecondScreenTest()));
+                  },
                 ),
                 _divider,
-                ListItem(
+                ListTile(
                   title: Text("¿Dónde lo entregamos?"),
-                  icon: Icon(Icons.edit, color: Colors.redAccent),
+                  trailing: Icon(Icons.edit, color: Colors.redAccent),
                 ),
                 _divider,
-                ListItem(
+                ListTile(
                   title: Text("¿Cuándo queres recibirlo?"),
-                  icon: Icon(Icons.edit, color: Colors.redAccent),
+                  trailing: Icon(Icons.edit, color: Colors.redAccent),
                 ),
                 _divider,
-                ListItem(
+                ListTile(
                   title: Text("Forma de pago"),
-                  icon: Icon(Icons.edit, color: Colors.redAccent),
+                  trailing: Icon(Icons.edit, color: Colors.redAccent),
                 ),
                 _divider,
               ],
             ),
           ),
-          RaisedButton(onPressed: null)
+          Expanded(
+            flex: 1,
+            child: SizedBox(
+              width: double.infinity,
+              child: RaisedButton(
+                  elevation: 0,
+                  child: Text(
+                    "Enviar pedido",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: Colors.white),
+                  ),
+                  color: Colors.redAccent,
+                  onPressed: () {
+                    print("Peidido Enviado");
+                  }),
+            ),
+          )
         ],
       ),
     );
@@ -82,27 +92,6 @@ final Divider _divider = Divider(
   indent: 10,
   height: 0,
 );
-
-class ListItem extends StatelessWidget {
-  final Widget title;
-  final Icon icon;
-  final Widget subtitle;
-  final Function onTap;
-  ListItem({this.onTap, this.subtitle, this.icon, this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      onTap: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => SecondScreenTest()));
-      },
-      subtitle: this.subtitle != null ? this.subtitle : null,
-      title: this.title != null ? this.title : null,
-      trailing: this.icon != null ? this.icon : null,
-    );
-  }
-}
 
 class SecondScreenTest extends StatefulWidget {
   SecondScreenTest();
