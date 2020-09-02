@@ -4,6 +4,7 @@ import 'package:isw_implementacion_us_08_g5/screens/pedir_lo_que_sea/dondeEntreg
 import 'package:isw_implementacion_us_08_g5/screens/pedir_lo_que_sea/formasDePago_screen.dart';
 import 'package:isw_implementacion_us_08_g5/screens/pedir_lo_que_sea/main_screen.dart';
 import 'package:isw_implementacion_us_08_g5/screens/pedir_lo_que_sea/dondeBuscar_screen.dart';
+import 'package:isw_implementacion_us_08_g5/screens/pedir_lo_que_sea/maps_screen.dart';
 import 'package:isw_implementacion_us_08_g5/screens/pedir_lo_que_sea/queBuscar_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home: DondeBuscarScreen(),
+        home: MapsScreen(),
       ),
     );
   }
