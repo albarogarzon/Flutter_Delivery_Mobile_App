@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:isw_implementacion_us_08_g5/screens/pedir_lo_que_sea/cuando_screen.dart';
+import 'package:isw_implementacion_us_08_g5/screens/pedir_lo_que_sea/dondeEntregar_screen.dart';
+import 'package:isw_implementacion_us_08_g5/screens/pedir_lo_que_sea/formasDePago_screen.dart';
 import 'package:isw_implementacion_us_08_g5/screens/pedir_lo_que_sea/main_screen.dart';
+import 'package:isw_implementacion_us_08_g5/screens/pedir_lo_que_sea/dondeBuscar_screen.dart';
+import 'package:isw_implementacion_us_08_g5/screens/pedir_lo_que_sea/queBuscar_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/DireccionRetiroProvider.dart';
@@ -21,7 +26,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home: PedirLoQueSeaMainScreen(),
+        home: DondeBuscarScreen(),
       ),
     );
   }
