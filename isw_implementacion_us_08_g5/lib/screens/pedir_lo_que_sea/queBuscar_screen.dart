@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:isw_implementacion_us_08_g5/models/Direccion.dart';
 import 'package:isw_implementacion_us_08_g5/providers/DireccionRetiroProvider.dart';
 import 'package:provider/provider.dart';

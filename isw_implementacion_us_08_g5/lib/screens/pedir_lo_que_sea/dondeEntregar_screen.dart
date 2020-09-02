@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:isw_implementacion_us_08_g5/models/Direccion.dart';
 import 'package:isw_implementacion_us_08_g5/providers/DireccionRetiroProvider.dart';
 import 'package:provider/provider.dart';
@@ -8,8 +7,7 @@ class DondeEntregarScreen extends StatefulWidget {
   DondeEntregarScreen();
 
   @override
-  _DondeEntregarScreenState createState() =>
-      _DondeEntregarScreenState();
+  _DondeEntregarScreenState createState() => _DondeEntregarScreenState();
 }
 
 class _DondeEntregarScreenState extends State<DondeEntregarScreen> {
@@ -34,95 +32,37 @@ class _DondeEntregarScreenState extends State<DondeEntregarScreen> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          MyCustomForm()
+          Expanded(
+              child: ListView(
+            children: [
+              TextFormField(
+                decoration:
+                    InputDecoration(labelText: 'Calle y número de puerta'),
+              ),
+              _divider,
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Departamento'),
+              ),
+              _divider,
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Teléfono'),
+              ),
+              _divider,
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Notas al repartidor'),
+              ),
+              _divider
+            ],
+          )),
+          RaisedButton(
+            onPressed: () {},
+            child: const Text('Listo', style: TextStyle(fontSize: 20)),
+          ),
         ],
-    
-      ) ,
+      ),
     );
   }
 }
-
-// Define a custom Form widget.
-class MyCustomForm extends StatefulWidget {
-  @override
-  MyCustomFormState createState() {
-    return MyCustomFormState();
-  }
-}
-
-// Define a corresponding State class.
-// This class holds data related to the form.
-class MyCustomFormState extends State<MyCustomForm> {
-  // Create a global key that uniquely identifies the Form widget
-  // and allows validation of the form.
-  //
-  // Note: This is a `GlobalKey<FormState>`,
-  // not a GlobalKey<MyCustomFormState>.
-  final _formKey = GlobalKey<FormState>();
-
-  @override
-  Widget build(BuildContext context) {
-    // Build a Form widget using the _formKey created above.
-    return Form(
-      key: _formKey,
-      child: Column(
-        children: <Widget>[
-              // Add TextFormFields and RaisedButton here.
-              TextFormField(
-  // The validator receives the text that the user has entered.
-  validator: (value) {
-    if (value.isEmpty) {
-      return 'Debes ingresar la calle y número de puerta';
-    }
-    return null;
-  },
-  decoration: InputDecoration(
-    hintText: "Calle y número de puerta"
-  ),
-),
-              TextFormField(
-  decoration: InputDecoration(
-    hintText: "Departamento"
-  ),
-),
-TextFormField(
-  decoration: InputDecoration(
-    hintText: "Teléfono"
-  ),
-),
-TextFormField(
-    validator: (value) {
-    if (value.isEmpty) {
-      return 'Debes ingresar las notas al repartidor';
-    }
-    return null;
-  },
-  decoration: InputDecoration(
-    hintText: "Notas al repartidor"
-  ),
-),
-RaisedButton(
-  onPressed: () {
-    // Validate returns true if the form is valid, otherwise false.
-    if (_formKey.currentState.validate()) {
-      // If the form is valid, display a snackbar. In the real world,
-      // you'd often call a server or save the information in a database.
-
-      Scaffold
-          .of(context)
-          .showSnackBar(SnackBar(content: Text('Processing Data')));
-    }
-  },
-  child: Text('Listo'),
-)
-
-        ]
-     )
-    );
-  }
-}
-
-
 
 final Divider _divider = Divider(
   color: Colors.grey,
