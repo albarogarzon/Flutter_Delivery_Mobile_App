@@ -45,7 +45,6 @@ class _FormasDePagoScreenState extends State<FormasDePagoScreen> {
               MyCustomForm()
             ],
           )),
-          
         ],
       ),
     );
