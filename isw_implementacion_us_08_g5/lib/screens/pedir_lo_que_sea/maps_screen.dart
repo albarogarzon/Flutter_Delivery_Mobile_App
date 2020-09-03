@@ -122,7 +122,9 @@ class _MapsScreenState extends State<MapsScreen> {
               TextField(
                 decoration: InputDecoration(
                     border: InputBorder.none,
-                    hintText: selectedPlace.formattedAddress),
+                    hintText: selectedPlace == null
+                    ? ""
+                    : selectedPlace.formattedAddress),
                     //"selectedPlace.formattedAddress" TIENE TEXTO CON DIRECCION human-readable
               )
             ],
