@@ -6,10 +6,11 @@ import 'package:isw_implementacion_us_08_g5/screens/pedir_lo_que_sea/queBuscar_s
 import 'package:provider/provider.dart';
 
 class PedirLoQueSeaMainScreen extends StatelessWidget {
+  DireccionRetiroProvider _direccionRetiroProvider;
   @override
   Widget build(BuildContext context) {
-    Direccion direccionRetiro =
-        Provider.of<DireccionRetiroProvider>(context).getDireccion;
+    _direccionRetiroProvider = Provider.of<DireccionRetiroProvider>(context);
+    Direccion direccionRetiro = _direccionRetiroProvider.getDireccion;
 
     return Scaffold(
       appBar: AppBar(
@@ -53,9 +54,6 @@ class PedirLoQueSeaMainScreen extends StatelessWidget {
                 _divider,
                 ListTile(
                   title: Text("¿Qué buscamos?"),
-                  subtitle: direccionRetiro.getCalle.isEmpty
-                      ? null
-                      : Text(direccionRetiro.getCalle),
                   trailing: Icon(Icons.edit, color: Colors.redAccent),
                   onTap: () {
                     Navigator.push(
@@ -92,14 +90,20 @@ class PedirLoQueSeaMainScreen extends StatelessWidget {
                         color: Colors.white),
                   ),
                   color: Colors.redAccent,
-                  onPressed: () {
-                    print("Peidido Enviado");
-                  }),
+                  onPressed: _onPressedEnviar),
             ),
           )
         ],
       ),
     );
+  }
+
+  _onPressedEnviar() {
+    if (_direccionRetiroProvider.isReady) {
+      print("Enviando pedido");
+    } else {
+      print("chupala puto");
+    }
   }
 }
 
