@@ -1,12 +1,39 @@
 class Direccion {
-  String calle;
-  int telefono;
+  String _calle;
+  String _ciudad;
+  String _referencias;
+  int _telefono;
 
   Direccion() {
-    this.calle = '';
-    this.telefono = null;
+    this._calle = '';
+    this._telefono = null;
+    this._ciudad = "";
+    this._referencias = '';
   }
 
-  String get getCalle => this.calle;
-  int get getTelefono => this.telefono;
+  Direccion.withParameters(
+      this._calle, this._ciudad, this._telefono, this._referencias);
+
+// Getters
+  String get getCalle => this._calle;
+  int get getTelefono => this._telefono;
+  String get getCiudad => this._ciudad;
+  String get getReferencias => this._referencias;
+
+// Setters
+  set calle(String calle) {
+    this._calle = calle;
+  }
+
+  set telefono(int telefono) {
+    this._telefono = telefono;
+  }
+
+  set ciudad(String ciudad) {
+    this._ciudad = ciudad;
+  }
+
+  set referencias(String referencias) {
+    this._referencias = referencias;
+  }
 }

@@ -8,19 +8,20 @@ class DireccionRetiroProvider extends ChangeNotifier {
     this._direccion = Direccion();
   }
 
+  // Getters
   Direccion get getDireccion => _direccion;
 
-  void setDireccion(Direccion direccion) {
+  setDireccion(Direccion direccion) {
     this._direccion = direccion;
     notifyListeners();
   }
 
-  void setCalle(String calle) {
+  set calle(String calle) {
     this._direccion.calle = calle;
     notifyListeners();
   }
 
-  void setTelefono(int telefono) {
+  set setTelefono(int telefono) {
     this._direccion.telefono = telefono;
     notifyListeners();
   }

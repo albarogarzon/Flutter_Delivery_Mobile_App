@@ -1,29 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:isw_implementacion_us_08_g5/models/Direccion.dart';
 import 'package:isw_implementacion_us_08_g5/providers/DireccionRetiroProvider.dart';
+import 'package:isw_implementacion_us_08_g5/validators/field_validator.dart';
 import 'package:provider/provider.dart';
 
 class DondeBuscarScreen extends StatefulWidget {
-  DondeBuscarScreen();
-
   @override
   _DondeBuscarScreenState createState() => _DondeBuscarScreenState();
 }
 
 class _DondeBuscarScreenState extends State<DondeBuscarScreen> {
-  final List<String> listItemTitles = [
-    "Crea tu pedido",
-    "¿Qué buscamos?",
-    "¿Dónde lo buscamos?",
-    "¿Dónde lo entregamos?",
-    "¿Cuando queres recibirlo?",
-    "Forma de pago"
-  ];
+  TextEditingController _ciudadTextFieldController;
+  TextEditingController _telefonoFieldController;
+  TextEditingController _calleFieldController;
+
+  FieldValidator _validator;
+  DireccionRetiroProvider _direccionRetiroProvider;
+
+  @override
+  void initState() {
+    _direccionRetiroProvider =
+        Provider.of<DireccionRetiroProvider>(context, listen: false);
+    _calleFieldController = TextEditingController(
+        text: _direccionRetiroProvider.getDireccion.getCalle);
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _validator.error = false;
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    Direccion direccionRetiro =
-        Provider.of<DireccionRetiroProvider>(context).getDireccion;
+    _validator = Provider.of<FieldValidator>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -36,9 +48,13 @@ class _DondeBuscarScreenState extends State<DondeBuscarScreen> {
           Expanded(
               child: ListView(
             children: [
-              TextFormField(
-                decoration:
-                    InputDecoration(labelText: 'Calle y número de puerta'),
+              TextField(
+                controller: _calleFieldController,
+                decoration: InputDecoration(
+                  labelText: 'Calle y número de puerta',
+                  errorText:
+                      _validator.error ? "Debe ingresar calle y numero" : null,
+                ),
               ),
               _divider,
               TextFormField(
@@ -50,18 +66,30 @@ class _DondeBuscarScreenState extends State<DondeBuscarScreen> {
               ),
               _divider,
               TextFormField(
-                decoration: InputDecoration(labelText: 'Notas al repartidor'),
+                decoration: InputDecoration(labelText: 'Referencias'),
               ),
               _divider
             ],
           )),
           RaisedButton(
-            onPressed: () {},
+            onPressed: _onPressedSubmit,
             child: const Text('Listo', style: TextStyle(fontSize: 20)),
           ),
         ],
       ),
     );
+  }
+
+  void _onPressedSubmit() {
+    if (this.mounted) {
+      String calle = this._calleFieldController.text;
+      _validator.validateFields(calle);
+      if (_validator.error) {
+        return;
+      } else {
+        this._direccionRetiroProvider.calle = calle;
+      }
+    }
   }
 }
 
@@ -70,60 +98,3 @@ final Divider _divider = Divider(
   indent: 10,
   height: 0,
 );
-
-class ListItem extends StatelessWidget {
-  final Widget title;
-  final Icon icon;
-  final Widget subtitle;
-  final Function onTap;
-  ListItem({this.onTap, this.subtitle, this.icon, this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      onTap: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => SecondScreenTest()));
-      },
-      subtitle: this.subtitle != null ? this.subtitle : null,
-      title: this.title != null ? this.title : null,
-      trailing: this.icon != null ? this.icon : null,
-    );
-  }
-}
-
-class SecondScreenTest extends StatefulWidget {
-  SecondScreenTest();
-
-  @override
-  _SecondScreenTestState createState() => _SecondScreenTestState();
-}
-
-class _SecondScreenTestState extends State<SecondScreenTest> {
-  final controller = TextEditingController();
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final DireccionRetiroProvider direccionRetiro =
-        Provider.of<DireccionRetiroProvider>(context);
-    controller.text = direccionRetiro.getDireccion.calle;
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(onPressed: () {
-        direccionRetiro.setCalle(controller.text);
-      }),
-      body: Center(
-          child: Container(
-        child: TextField(
-          controller: controller,
-        ),
-        width: 100,
-        height: 50,
-      )),
-    );
-  }
-}

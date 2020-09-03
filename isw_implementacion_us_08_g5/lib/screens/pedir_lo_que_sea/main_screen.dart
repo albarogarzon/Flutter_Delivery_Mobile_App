@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:isw_implementacion_us_08_g5/models/Direccion.dart';
 import 'package:isw_implementacion_us_08_g5/providers/DireccionRetiroProvider.dart';
+import 'package:isw_implementacion_us_08_g5/screens/pedir_lo_que_sea/dondeBuscar_screen.dart';
+import 'package:isw_implementacion_us_08_g5/screens/pedir_lo_que_sea/queBuscar_screen.dart';
 import 'package:provider/provider.dart';
 
 class PedirLoQueSeaMainScreen extends StatelessWidget {
@@ -32,21 +34,35 @@ class PedirLoQueSeaMainScreen extends StatelessWidget {
                 _divider,
                 ListTile(
                   title: Text("¿Dónde lo buscamos?"),
-                  subtitle: direccionRetiro.calle.isEmpty
+                  subtitle: direccionRetiro.getCalle.isEmpty
                       ? null
-                      : Text(direccionRetiro.calle),
+                      : Text(direccionRetiro.getCalle),
                   trailing: Icon(Icons.edit, color: Colors.redAccent),
                   onTap: () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => SecondScreenTest()));
+                            builder: (context) => DondeBuscarScreen()));
                   },
                 ),
                 _divider,
                 ListTile(
                   title: Text("¿Dónde lo entregamos?"),
                   trailing: Icon(Icons.edit, color: Colors.redAccent),
+                ),
+                _divider,
+                ListTile(
+                  title: Text("¿Qué buscamos?"),
+                  subtitle: direccionRetiro.getCalle.isEmpty
+                      ? null
+                      : Text(direccionRetiro.getCalle),
+                  trailing: Icon(Icons.edit, color: Colors.redAccent),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => QueBuscarScreen()));
+                  },
                 ),
                 _divider,
                 ListTile(
@@ -92,39 +108,3 @@ final Divider _divider = Divider(
   indent: 10,
   height: 0,
 );
-
-class SecondScreenTest extends StatefulWidget {
-  SecondScreenTest();
-
-  @override
-  _SecondScreenTestState createState() => _SecondScreenTestState();
-}
-
-class _SecondScreenTestState extends State<SecondScreenTest> {
-  final controller = TextEditingController();
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final DireccionRetiroProvider direccionRetiro =
-        Provider.of<DireccionRetiroProvider>(context);
-    controller.text = direccionRetiro.getDireccion.calle;
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(onPressed: () {
-        direccionRetiro.setCalle(controller.text);
-      }),
-      body: Center(
-          child: Container(
-        child: TextField(
-          controller: controller,
-        ),
-        width: 100,
-        height: 50,
-      )),
-    );
-  }
-}

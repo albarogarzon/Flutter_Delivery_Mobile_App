@@ -11,9 +11,7 @@ class QueBuscarScreen extends StatefulWidget {
 }
 
 class _QueBuscarScreenState extends State<QueBuscarScreen> {
-
-
-final List<String> _categories = [
+  final List<String> _categories = [
     "Correspondencia",
     "Vestimenta",
     "Electronica",
@@ -61,7 +59,6 @@ final List<String> _categories = [
       ),
     );
   }
-
 }
 
 // Define a custom Form widget.
@@ -164,10 +161,10 @@ class _SecondScreenTestState extends State<SecondScreenTest> {
   Widget build(BuildContext context) {
     final DireccionRetiroProvider direccionRetiro =
         Provider.of<DireccionRetiroProvider>(context);
-    controller.text = direccionRetiro.getDireccion.calle;
+    controller.text = direccionRetiro.getDireccion.getCalle;
     return Scaffold(
       floatingActionButton: FloatingActionButton(onPressed: () {
-        direccionRetiro.setCalle(controller.text);
+        // direccionRetiro.setCalle(controller.text);
       }),
       body: Center(
           child: Container(
