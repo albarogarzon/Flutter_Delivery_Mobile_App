@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 
-class FieldValidator extends ChangeNotifier {
+class InformacionEntregaValidator extends ChangeNotifier {
   bool _validatorError;
 
-  FieldValidator() {
+  InformacionEntregaValidator() {
     this._validatorError = false;
   }
 
@@ -19,6 +19,8 @@ class FieldValidator extends ChangeNotifier {
 
   set error(bool value) {
     this._validatorError = value;
+
+    notifyListeners();
   }
 
   bool get error => this._validatorError;

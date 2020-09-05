@@ -1,20 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:isw_implementacion_us_08_g5/models/Direccion.dart';
-import 'package:isw_implementacion_us_08_g5/providers/DireccionRetiroProvider.dart';
+import 'package:isw_implementacion_us_08_g5/providers/InformacionEntrega.dart';
+import 'package:isw_implementacion_us_08_g5/providers/InformacionRetiro.dart';
+import 'package:isw_implementacion_us_08_g5/resources/Strings.dart';
+import 'package:isw_implementacion_us_08_g5/screens/pedir_lo_que_sea/QueBuscamosScreen.dart';
 import 'package:isw_implementacion_us_08_g5/screens/pedir_lo_que_sea/dondeBuscar_screen.dart';
+import 'package:isw_implementacion_us_08_g5/screens/pedir_lo_que_sea/dondeEntregar_screen.dart';
 import 'package:isw_implementacion_us_08_g5/screens/pedir_lo_que_sea/queBuscar_screen.dart';
 import 'package:provider/provider.dart';
 
 class PedirLoQueSeaMainScreen extends StatelessWidget {
-  DireccionRetiroProvider _direccionRetiroProvider;
+  InformacionRetiro _direccionRetiroProvider;
+  InformacionEntrega _informacionEntrega;
   @override
   Widget build(BuildContext context) {
-    _direccionRetiroProvider = Provider.of<DireccionRetiroProvider>(context);
+    _direccionRetiroProvider = Provider.of<InformacionRetiro>(context);
+    _informacionEntrega = Provider.of<InformacionEntrega>(context);
     Direccion direccionRetiro = _direccionRetiroProvider.getDireccion;
 
     return Scaffold(
       appBar: AppBar(
-          title: Text("Pedí lo que sea"), backgroundColor: Colors.redAccent),
+          title: Text(Strings.PEDI_LO_QUE_SEA),
+          backgroundColor: Colors.redAccent),
       body: Column(
         verticalDirection: VerticalDirection.down,
         textDirection: TextDirection.ltr,
@@ -28,13 +35,13 @@ class PedirLoQueSeaMainScreen extends StatelessWidget {
               children: [
                 ListTile(
                   title: Text(
-                    "Crea tu pedido",
+                    Strings.CREA_TU_PEDIDO,
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                   ),
                 ),
                 _divider,
                 ListTile(
-                  title: Text("¿Dónde lo buscamos?"),
+                  title: Text(Strings.DONDE_LO_BUSCAMOS),
                   subtitle: direccionRetiro.getCalle.isEmpty
                       ? null
                       : Text(direccionRetiro.getCalle),
@@ -48,28 +55,37 @@ class PedirLoQueSeaMainScreen extends StatelessWidget {
                 ),
                 _divider,
                 ListTile(
-                  title: Text("¿Dónde lo entregamos?"),
+                  title: Text(Strings.DONDE_LO_ENTREGAMOS),
                   trailing: Icon(Icons.edit, color: Colors.redAccent),
+                  subtitle: _informacionEntrega.getCalle.isEmpty
+                      ? null
+                      : Text(_informacionEntrega.getCalle),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => DondeEntregarScreen()));
+                  },
                 ),
                 _divider,
                 ListTile(
-                  title: Text("¿Qué buscamos?"),
+                  title: Text(Strings.QUE_BUSCAMOS),
                   trailing: Icon(Icons.edit, color: Colors.redAccent),
                   onTap: () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => QueBuscarScreen()));
+                            builder: (context) => QueBuscamosScreen()));
                   },
                 ),
                 _divider,
                 ListTile(
-                  title: Text("¿Cuándo queres recibirlo?"),
+                  title: Text(Strings.CUANDO_QUERES_RECIBIRLO),
                   trailing: Icon(Icons.edit, color: Colors.redAccent),
                 ),
                 _divider,
                 ListTile(
-                  title: Text("Forma de pago"),
+                  title: Text(Strings.FORMA_DE_PAGO),
                   trailing: Icon(Icons.edit, color: Colors.redAccent),
                 ),
                 _divider,
