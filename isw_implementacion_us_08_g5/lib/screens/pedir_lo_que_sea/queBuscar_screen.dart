@@ -1,182 +1,136 @@
-import 'package:flutter/material.dart';
-import 'package:isw_implementacion_us_08_g5/models/Direccion.dart';
-import 'package:isw_implementacion_us_08_g5/providers/DireccionRetiroProvider.dart';
-import 'package:provider/provider.dart';
+import 'dart:ffi';
+import 'dart:io';
 
-class QueBuscarScreen extends StatefulWidget {
-  QueBuscarScreen();
+import 'package:flutter/material.dart';
+import 'package:isw_implementacion_us_08_g5/resources/Strings.dart';
+import 'package:image_picker/image_picker.dart';
+
+class QueBuscamosScreen extends StatefulWidget {
+  QueBuscamosScreen({Key key}) : super(key: key);
 
   @override
-  _QueBuscarScreenState createState() => _QueBuscarScreenState();
+  _QueBuscamosScreenState createState() => _QueBuscamosScreenState();
 }
 
-class _QueBuscarScreenState extends State<QueBuscarScreen> {
+class _QueBuscamosScreenState extends State<QueBuscamosScreen> {
+  File _image;
+  final picker = ImagePicker();
 
-
-final List<String> _categories = [
-    "Correspondencia",
-    "Vestimenta",
-    "Electronica",
-    "Alimentos",
-    "Llaves",
-    "Libros",
-    "Otros"
-  ];
-
-  final List<String> listItemTitles = [
-    "Crea tu pedido",
-    "¿Qué buscamos?",
-    "¿Dónde lo buscamos?",
-    "¿Dónde lo entregamos?",
-    "¿Cuando queres recibirlo?",
-    "Forma de pago"
-  ];
+  Future getImage() async {
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    final bytes = await pickedFile.readAsBytes();
+    print("BYTES:${bytes.length}");
+    setState(() {
+      _image = File(pickedFile.path);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    Direccion direccionRetiro =
-        Provider.of<DireccionRetiroProvider>(context).getDireccion;
-
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
-          title: Text("Ingresá lo que vas a enviar"),
+          centerTitle: true,
+          title: Text(Strings.QUE_BUSCAMOS),
           backgroundColor: Colors.redAccent),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          new DropdownButton(
-            items: _categories
-                .map((value) => DropdownMenuItem(
-                      child: Text(value),
-                      value: value,
-                    ))
-                .toList(),
-            onChanged: (String value) {},
-            isExpanded: false,
-            hint: Text('¿Qué vas a enviar?'),
-          ),
-          MyCustomForm(),
-        ],
+      body: Container(
+        height: double.maxFinite,
+        width: double.maxFinite,
+        margin: EdgeInsets.only(top: 10, right: 10, left: 10),
+        child: Column(
+          verticalDirection: VerticalDirection.down,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            TextField(
+              decoration: InputDecoration(labelText: 'Ingresá una descripción'),
+            ),
+            _buildTitle(),
+            _divider,
+            GridView.count(
+              shrinkWrap: true,
+              primary: false,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+              crossAxisCount: 3,
+              children: <Widget>[
+                GestureDetector(
+                  //-----------------------------------ACA
+                  onTap: getImage,
+                  child: Container(
+                    color: Colors.black12,
+                    child: _image == null || checkFileSize(_image.path) == false
+                        ? Icon(Icons.add)
+                        : Image.file(_image),
+                  ),
+                ),
+              ],
+            ),
+            Spacer(),
+            _buildSubmitButton()
+          ],
+        ),
       ),
     );
   }
 
-}
-
-// Define a custom Form widget.
-class MyCustomForm extends StatefulWidget {
-  @override
-  MyCustomFormState createState() {
-    return MyCustomFormState();
-  }
-}
-
-// Define a corresponding State class.
-// This class holds data related to the form.
-class MyCustomFormState extends State<MyCustomForm> {
-  // Create a global key that uniquely identifies the Form widget
-  // and allows validation of the form.
-  //
-  // Note: This is a `GlobalKey<FormState>`,
-  // not a GlobalKey<MyCustomFormState>.
-  final _formKey = GlobalKey<FormState>();
-
-  @override
-  Widget build(BuildContext context) {
-    // Build a Form widget using the _formKey created above.
-    return Form(
-        key: _formKey,
-        child: Column(children: <Widget>[
-          // Add TextFormFields and RaisedButton here.
-
-          TextFormField(
-            // The validator receives the text that the user has entered.
-            validator: (value) {
-              if (value.isEmpty) {
-                return 'Debes ingresar un valor válido';
-              }
-              return null;
-            },
-            decoration:
-                InputDecoration(hintText: "Valor de lo que vas a enviar"),
-          ),
-          RaisedButton(
-            onPressed: () {
-              // Validate returns true if the form is valid, otherwise false.
-              if (_formKey.currentState.validate()) {
-                // If the form is valid, display a snackbar. In the real world,
-                // you'd often call a server or save the information in a database.
-
-                Scaffold.of(context)
-                    .showSnackBar(SnackBar(content: Text('Processing Data')));
-              }
-            },
-            child: Text('Listo'),
-          )
-        ]));
-  }
-}
-
-final Divider _divider = Divider(
-  color: Colors.grey,
-  indent: 10,
-  height: 0,
-);
-
-class ListItem extends StatelessWidget {
-  final Widget title;
-  final Icon icon;
-  final Widget subtitle;
-  final Function onTap;
-  ListItem({this.onTap, this.subtitle, this.icon, this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      onTap: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => SecondScreenTest()));
-      },
-      subtitle: this.subtitle != null ? this.subtitle : null,
-      title: this.title != null ? this.title : null,
-      trailing: this.icon != null ? this.icon : null,
+  _buildSubmitButton() {
+    return Container(
+      width: double.maxFinite,
+      child: RaisedButton(
+        color: Colors.redAccent,
+        onPressed: () {},
+        child: const Text('Listo',
+            style: TextStyle(fontSize: 20, color: Colors.white)),
+      ),
     );
   }
-}
 
-class SecondScreenTest extends StatefulWidget {
-  SecondScreenTest();
-
-  @override
-  _SecondScreenTestState createState() => _SecondScreenTestState();
-}
-
-class _SecondScreenTestState extends State<SecondScreenTest> {
-  final controller = TextEditingController();
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final DireccionRetiroProvider direccionRetiro =
-        Provider.of<DireccionRetiroProvider>(context);
-    controller.text = direccionRetiro.getDireccion.calle;
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(onPressed: () {
-        direccionRetiro.setCalle(controller.text);
-      }),
-      body: Center(
-          child: Container(
-        child: TextField(
-          controller: controller,
-        ),
-        width: 100,
-        height: 50,
-      )),
+  _buildTitle() {
+    return Container(
+      margin: EdgeInsets.only(top: 10),
+      width: double.infinity,
+      child: Text(
+        "Subí una foto",
+        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      ),
     );
   }
+
+  final Divider _divider = Divider(
+    color: Colors.grey,
+  );
+
+  checkFileSize(path) {
+    print("Entro a check");
+    var fileSizeLimit = 5000000;
+    File f = new File(path);
+    var s = f.lengthSync();
+    print(s); // returns in bytes
+    var fileSizeInKB = s / 1024;
+    // Convert the KB to MegaBytes (1 MB = 1024 KBytes)
+    var fileSizeInMB = fileSizeInKB / 1024;
+
+    if (s > fileSizeLimit) {
+      print("File size greater than the limit$s");
+      return false;
+    } else {
+      print("File can be selected$s");
+      return true;
+    }
+  }
+
+
+    /* final snackBar = SnackBar(
+      content: Text('Imagen mayor a 5MB o no seleccionada!'),
+      action: SnackBarAction(
+        label: 'Undo',
+        onPressed: () {
+          // Some code to undo the change.
+        },
+      ),
+    );
+    return snackBar; */
+  
 }
