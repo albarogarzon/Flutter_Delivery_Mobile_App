@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:isw_implementacion_us_08_g5/enums/enum.dart';
+import 'package:isw_implementacion_us_08_g5/enums/screens_enum.dart';
 import 'package:isw_implementacion_us_08_g5/providers/DeliveryAddressInformation.dart';
 import 'package:isw_implementacion_us_08_g5/providers/PickupAddressInformation.dart';
 
@@ -29,10 +29,10 @@ class MainController extends ChangeNotifier {
 
   Screens whoIsNotReady() {
     if (!_pickupAddressInformation.isReady) {
-      return Screens.pickupInformation;
+      return Screens.DondeLoBuscamosScreen;
     } else {
       if (!_deliveryAddressInformation.isReady) {
-        return Screens.deliveryInformation;
+        return Screens.DondeLoEntregamosScreen;
       }
     }
   }

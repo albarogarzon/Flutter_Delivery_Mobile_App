@@ -1,26 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:isw_implementacion_us_08_g5/controllers/MainController.dart';
-import 'package:isw_implementacion_us_08_g5/enums/enum.dart';
+import 'package:isw_implementacion_us_08_g5/enums/screens_enum.dart';
 import 'package:isw_implementacion_us_08_g5/models/Direccion.dart';
 import 'package:isw_implementacion_us_08_g5/providers/DeliveryAddressInformation.dart';
+import 'package:isw_implementacion_us_08_g5/providers/DeliveryTimeInformation.dart';
 import 'package:isw_implementacion_us_08_g5/providers/PickupAddressInformation.dart';
 import 'package:isw_implementacion_us_08_g5/resources/Strings.dart';
+import 'package:isw_implementacion_us_08_g5/screens/pedir_lo_que_sea/FormaDePagoScreen.dart';
 import 'package:isw_implementacion_us_08_g5/screens/pedir_lo_que_sea/QueBuscamosScreen.dart';
-import 'package:isw_implementacion_us_08_g5/screens/pedir_lo_que_sea/dondeBuscar_screen.dart';
-import 'package:isw_implementacion_us_08_g5/screens/pedir_lo_que_sea/dondeEntregar_screen.dart';
+import 'package:isw_implementacion_us_08_g5/screens/pedir_lo_que_sea/CuandoQueresRecibirloScreen.dart';
+import 'package:isw_implementacion_us_08_g5/screens/pedir_lo_que_sea/DondeLoBuscamosScreen.dart';
+import 'package:isw_implementacion_us_08_g5/screens/pedir_lo_que_sea/DondeLoEntregamosScreen.dart';
 
 import 'package:provider/provider.dart';
 
-class PedirLoQueSeaMainScreen extends StatelessWidget {
+class MainScreen extends StatefulWidget {
+  @override
+  _MainScreenState createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
   PickupAddressInformation _direccionRetiroProvider;
+
   DeliveryAddressInformation _informacionEntrega;
+
+  DeliveryTimeInformation _deliveryTimeInformation;
+
   MainController _mainController;
+
   @override
   Widget build(BuildContext context) {
     _direccionRetiroProvider = Provider.of<PickupAddressInformation>(context);
     _informacionEntrega = Provider.of<DeliveryAddressInformation>(context);
     _mainController = Provider.of<MainController>(context);
-
+    _deliveryTimeInformation = Provider.of<DeliveryTimeInformation>(context);
     Direccion direccionRetiro = _direccionRetiroProvider.getDireccion;
 
     return Scaffold(
@@ -55,7 +68,7 @@ class PedirLoQueSeaMainScreen extends StatelessWidget {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => DondeBuscarScreen()));
+                            builder: (context) => DondeLoBuscamosScreen()));
                   },
                 ),
                 _divider,
@@ -69,7 +82,7 @@ class PedirLoQueSeaMainScreen extends StatelessWidget {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => DondeEntregarScreen()));
+                            builder: (context) => DondeLoEntregamosScreen()));
                   },
                 ),
                 _divider,
@@ -87,11 +100,26 @@ class PedirLoQueSeaMainScreen extends StatelessWidget {
                 ListTile(
                   title: Text(Strings.CUANDO_QUERES_RECIBIRLO),
                   trailing: Icon(Icons.edit, color: Colors.redAccent),
+                  subtitle: Text(
+                      _deliveryTimeInformation.getSelectedTime.getTimeValue),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                CuandoQueresRecibirloScreen()));
+                  },
                 ),
                 _divider,
                 ListTile(
                   title: Text(Strings.FORMA_DE_PAGO),
                   trailing: Icon(Icons.edit, color: Colors.redAccent),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => FormaDePagoScreen()));
+                  },
                 ),
                 _divider,
               ],
@@ -124,7 +152,23 @@ class PedirLoQueSeaMainScreen extends StatelessWidget {
       print("Enviando pedido");
     } else {
       switch (_mainController.whoIsNotReady()) {
-        case Screens.pickupInformation:
+        case Screens.DondeLoBuscamosScreen:
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => DondeLoBuscamosScreen()));
+          break;
+        case Screens.DondeLoEntregamosScreen:
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => DondeLoEntregamosScreen()));
+          break;
+        case Screens.QueBuscamosScreen:
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => QueBuscamosScreen()));
+          break;
+        case Screens.FormaDePagoScreen:
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => FormaDePagoScreen()));
           break;
         default:
       }

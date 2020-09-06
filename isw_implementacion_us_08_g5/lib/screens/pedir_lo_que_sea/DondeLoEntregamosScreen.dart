@@ -10,14 +10,15 @@ import 'package:isw_implementacion_us_08_g5/validators/DeliveryAddressInformatio
 import 'package:isw_implementacion_us_08_g5/validators/PickupAddressInformationValidator.dart';
 import 'package:provider/provider.dart';
 
-class DondeEntregarScreen extends StatefulWidget {
-  DondeEntregarScreen();
+class DondeLoEntregamosScreen extends StatefulWidget {
+  DondeLoEntregamosScreen();
 
   @override
-  _DondeEntregarScreenState createState() => _DondeEntregarScreenState();
+  _DondeLoEntregamosScreenState createState() =>
+      _DondeLoEntregamosScreenState();
 }
 
-class _DondeEntregarScreenState extends State<DondeEntregarScreen> {
+class _DondeLoEntregamosScreenState extends State<DondeLoEntregamosScreen> {
   TextEditingController _telefonoFieldController;
   TextEditingController _calleFieldController;
   TextEditingController _pisoFieldController;

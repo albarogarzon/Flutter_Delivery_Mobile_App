@@ -9,12 +9,12 @@ import 'package:isw_implementacion_us_08_g5/resources/Strings.dart';
 import 'package:isw_implementacion_us_08_g5/validators/PickupAddressInformationValidator.dart';
 import 'package:provider/provider.dart';
 
-class DondeBuscarScreen extends StatefulWidget {
+class DondeLoBuscamosScreen extends StatefulWidget {
   @override
-  _DondeBuscarScreenState createState() => _DondeBuscarScreenState();
+  _DondeLoBuscamosScreenState createState() => _DondeLoBuscamosScreenState();
 }
 
-class _DondeBuscarScreenState extends State<DondeBuscarScreen> {
+class _DondeLoBuscamosScreenState extends State<DondeLoBuscamosScreen> {
   PickResult selectedPlace;
   TextEditingController _telefonoFieldController;
   TextEditingController _calleFieldController;

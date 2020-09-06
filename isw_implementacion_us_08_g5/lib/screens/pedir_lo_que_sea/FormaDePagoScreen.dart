@@ -3,18 +3,14 @@ import 'package:isw_implementacion_us_08_g5/models/Direccion.dart';
 import 'package:isw_implementacion_us_08_g5/providers/PickupAddressInformation.dart';
 import 'package:provider/provider.dart';
 
-class CuandoScreen extends StatefulWidget {
-  CuandoScreen();
+class FormaDePagoScreen extends StatefulWidget {
+  FormaDePagoScreen();
 
   @override
-  _CuandoScreenState createState() => _CuandoScreenState();
+  _FormaDePagoScreenState createState() => _FormaDePagoScreenState();
 }
 
-enum Eleccion { antesPosible, personalizado }
-
-class _CuandoScreenState extends State<CuandoScreen> {
-  Eleccion _eleccion = Eleccion.antesPosible;
-
+class _FormaDePagoScreenState extends State<FormaDePagoScreen> {
   final List<String> listItemTitles = [
     "Crea tu pedido",
     "¿Qué buscamos?",
@@ -31,8 +27,7 @@ class _CuandoScreenState extends State<CuandoScreen> {
 
     return Scaffold(
       appBar: AppBar(
-          title: Text("¿Cuándo lo buscamos?"),
-          backgroundColor: Colors.redAccent),
+          title: Text("Formas De Pago"), backgroundColor: Colors.redAccent),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -40,33 +35,16 @@ class _CuandoScreenState extends State<CuandoScreen> {
           Expanded(
               child: ListView(
             children: [
-              ListTile(
-                title: const Text('Lo antes posible'),
-                leading: Radio(
-                  value: Eleccion.antesPosible,
-                  groupValue: _eleccion,
-                  onChanged: (Eleccion value) {
-                    setState(() {
-                      _eleccion = value;
-                    });
-                  },
+              ListItem(
+                title: Text(
+                  "Online",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                 ),
               ),
-              ListTile(
-                title: const Text('Personalizado'),
-                leading: Radio(
-                  value: Eleccion.personalizado,
-                  groupValue: _eleccion,
-                  onChanged: (Eleccion value) {
-                    setState(() {
-                      _eleccion = value;
-                    });
-                  },
-                ),
-              ),
+              _divider,
               MyCustomForm()
             ],
-          ))
+          )),
         ],
       ),
     );
@@ -90,7 +68,6 @@ class MyCustomFormState extends State<MyCustomForm> {
   // Note: This is a `GlobalKey<FormState>`,
   // not a GlobalKey<MyCustomFormState>.
   final _formKey = GlobalKey<FormState>();
-  bool _disable = true; // set this to false initially
 
   @override
   Widget build(BuildContext context) {
@@ -101,14 +78,28 @@ class MyCustomFormState extends State<MyCustomForm> {
           // Add TextFormFields and RaisedButton here.
           TextFormField(
             // The validator receives the text that the user has entered.
-            enabled: !_disable, // set to false to disable it.
             validator: (value) {
               if (value.isEmpty) {
-                return 'Debes ingresar un rango horario';
+                return 'Debes ingresar la calle y número de puerta';
               }
               return null;
             },
-            decoration: InputDecoration(hintText: "Rango Horario"),
+            decoration: InputDecoration(hintText: "Tarjeta,,,,"),
+          ),
+          TextFormField(
+            decoration: InputDecoration(hintText: "tarjeta....."),
+          ),
+          TextFormField(
+            decoration: InputDecoration(hintText: "tarjeta...."),
+          ),
+          TextFormField(
+            validator: (value) {
+              if (value.isEmpty) {
+                return 'Debes ingresar las notas al repartidor';
+              }
+              return null;
+            },
+            decoration: InputDecoration(hintText: "Notas al repartidor"),
           ),
           RaisedButton(
             onPressed: () {

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:isw_implementacion_us_08_g5/controllers/MainController.dart';
 import 'package:isw_implementacion_us_08_g5/providers/DeliveryAddressInformation.dart';
+import 'package:isw_implementacion_us_08_g5/providers/DeliveryTimeInformation.dart';
 
-import 'package:isw_implementacion_us_08_g5/screens/pedir_lo_que_sea/main_screen.dart';
+import 'package:isw_implementacion_us_08_g5/screens/pedir_lo_que_sea/MainScreen.dart';
 
 import 'package:isw_implementacion_us_08_g5/validators/DeliveryAddressInformationValidator.dart';
 import 'package:isw_implementacion_us_08_g5/validators/PickupAddressInformationValidator.dart';
@@ -25,6 +26,8 @@ class MyApp extends StatelessWidget {
             value: DeliveryAddressInformationValidator()),
         ChangeNotifierProvider.value(value: PickupAddressInformation()),
         ChangeNotifierProvider.value(value: DeliveryAddressInformation()),
+        ChangeNotifierProvider<DeliveryTimeInformation>(
+            create: (BuildContext context) => DeliveryTimeInformation()),
         ChangeNotifierProxyProvider2<PickupAddressInformation,
                 DeliveryAddressInformation, MainController>(
             create: (BuildContext context) => MainController(null, null),
@@ -39,7 +42,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home: PedirLoQueSeaMainScreen(),
+        home: MainScreen(),
       ),
     );
   }
