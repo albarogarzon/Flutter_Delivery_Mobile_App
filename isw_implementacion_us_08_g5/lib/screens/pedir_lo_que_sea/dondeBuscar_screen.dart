@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_maps_place_picker/google_maps_place_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:isw_implementacion_us_08_g5/components/ListoButton.dart';
 import 'package:isw_implementacion_us_08_g5/models/Direccion.dart';
-import 'package:isw_implementacion_us_08_g5/providers/InformacionRetiro.dart';
+import 'package:isw_implementacion_us_08_g5/providers/PickupAddressInformation.dart';
 import 'package:isw_implementacion_us_08_g5/resources/Strings.dart';
-import 'package:isw_implementacion_us_08_g5/validators/InformacionRetiroValidator.dart';
+import 'package:isw_implementacion_us_08_g5/validators/PickupAddressInformationValidator.dart';
 import 'package:provider/provider.dart';
 
 class DondeBuscarScreen extends StatefulWidget {
@@ -17,20 +18,33 @@ class _DondeBuscarScreenState extends State<DondeBuscarScreen> {
   PickResult selectedPlace;
   TextEditingController _telefonoFieldController;
   TextEditingController _calleFieldController;
+  TextEditingController _pisoFieldController;
+  TextEditingController _departamentoFieldController;
+  TextEditingController _referenciasFieldController;
 
-  InformacionRetiroValidator _validator;
-  InformacionRetiro _informacionRetiro;
+  PickupAddressInformationValidator _validator;
+  PickupAddressInformation _informacionRetiro;
 
   @override
   void initState() {
     _validator =
-        Provider.of<InformacionRetiroValidator>(context, listen: false);
+        Provider.of<PickupAddressInformationValidator>(context, listen: false);
     _validator.setErrorWithoutNotifyListeners = false;
-    _informacionRetiro = Provider.of<InformacionRetiro>(context, listen: false);
+    _informacionRetiro =
+        Provider.of<PickupAddressInformation>(context, listen: false);
+
+    // Field controllers
     _calleFieldController =
         TextEditingController(text: _informacionRetiro.getDireccion.getCalle);
     _telefonoFieldController =
-        TextEditingController(text: _informacionRetiro.getTelefono.toString());
+        TextEditingController(text: _informacionRetiro.getTelefono);
+    _pisoFieldController =
+        TextEditingController(text: _informacionRetiro.getDireccion.getPiso);
+    _departamentoFieldController = TextEditingController(
+        text: _informacionRetiro.getDireccion.getNumDepartamento);
+    _referenciasFieldController = TextEditingController(
+        text: _informacionRetiro.getDireccion.getReferencias);
+
     super.initState();
   }
 
@@ -38,6 +52,10 @@ class _DondeBuscarScreenState extends State<DondeBuscarScreen> {
   void dispose() {
     _calleFieldController.dispose();
     _telefonoFieldController.dispose();
+    _referenciasFieldController.dispose();
+    _pisoFieldController.dispose();
+    _departamentoFieldController.dispose();
+
     super.dispose();
   }
 
@@ -71,13 +89,14 @@ class _DondeBuscarScreenState extends State<DondeBuscarScreen> {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisSize: MainAxisSize.max,
       children: [
-        Selector<InformacionRetiroValidator, bool>(
+        Selector<PickupAddressInformationValidator, bool>(
           selector: (
             _,
             validator,
           ) =>
               validator.getCalleFieldError,
           builder: (_, error, __) => TextField(
+            keyboardType: TextInputType.streetAddress,
             controller: _calleFieldController,
             decoration: InputDecoration(
               suffixIcon: IconButton(
@@ -95,13 +114,14 @@ class _DondeBuscarScreenState extends State<DondeBuscarScreen> {
         TextField(
           decoration: InputDecoration(labelText: Strings.DEPARTAMENTO),
         ),
-        Selector<InformacionRetiroValidator, bool>(
+        Selector<PickupAddressInformationValidator, bool>(
             selector: (
               _,
               validator,
             ) =>
                 validator.getTelefonoFieldError,
             builder: (_, error, __) => TextField(
+                  keyboardType: TextInputType.phone,
                   controller: _telefonoFieldController,
                   decoration: InputDecoration(
                       errorText: error ? Strings.TELEFONO_ERROR : null,
@@ -119,7 +139,7 @@ class _DondeBuscarScreenState extends State<DondeBuscarScreen> {
 
   _buildSubmitButton() {
     return ListoButton(
-      onPressed: _onPressedSubmit,
+      onPressed: _listo,
     );
   }
 
@@ -141,19 +161,28 @@ class _DondeBuscarScreenState extends State<DondeBuscarScreen> {
     }));
   }
 
-  void _onPressedSubmit() {
-    InformacionRetiroValidator validator =
-        Provider.of<InformacionRetiroValidator>(context, listen: false);
-    if (this.mounted) {
-      String calle = this._calleFieldController.text;
-      String telefono = this._telefonoFieldController.text;
-      validator.validateFields(calle, telefono);
-      if (validator.error) {
-        return;
-      } else {
-        this._informacionRetiro.setCalle = calle;
-        Navigator.of(context).pop();
-      }
+  void _listo() {
+    String calle = this._calleFieldController.text;
+    String telefono = this._telefonoFieldController.text;
+
+    _validator.validateFields(calle, telefono);
+    _saveData();
+  }
+
+  void _saveData() {
+    String calle = this._calleFieldController.text;
+    String telefono = this._telefonoFieldController.text;
+    String piso = this._pisoFieldController.text;
+    String departamento = this._departamentoFieldController.text;
+    String referencias = this._referenciasFieldController.text;
+
+    if (_validator.error) {
+      return;
+    } else {
+      this
+          ._informacionRetiro
+          .saveData(calle, piso, departamento, telefono, referencias);
+      Navigator.of(context).pop();
     }
   }
 }

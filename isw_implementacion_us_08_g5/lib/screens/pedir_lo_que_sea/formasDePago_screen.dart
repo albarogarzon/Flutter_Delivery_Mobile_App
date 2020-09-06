@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:isw_implementacion_us_08_g5/models/Direccion.dart';
-import 'package:isw_implementacion_us_08_g5/providers/InformacionRetiro.dart';
+import 'package:isw_implementacion_us_08_g5/providers/PickupAddressInformation.dart';
 import 'package:provider/provider.dart';
 
 class FormasDePagoScreen extends StatefulWidget {
@@ -23,7 +23,7 @@ class _FormasDePagoScreenState extends State<FormasDePagoScreen> {
   @override
   Widget build(BuildContext context) {
     Direccion direccionRetiro =
-        Provider.of<InformacionRetiro>(context).getDireccion;
+        Provider.of<PickupAddressInformation>(context).getDireccion;
 
     return Scaffold(
       appBar: AppBar(
@@ -162,8 +162,8 @@ class _SecondScreenTestState extends State<SecondScreenTest> {
 
   @override
   Widget build(BuildContext context) {
-    final InformacionRetiro direccionRetiro =
-        Provider.of<InformacionRetiro>(context);
+    final PickupAddressInformation direccionRetiro =
+        Provider.of<PickupAddressInformation>(context);
     controller.text = direccionRetiro.getDireccion.getCalle;
     return Scaffold(
       floatingActionButton: FloatingActionButton(onPressed: () {

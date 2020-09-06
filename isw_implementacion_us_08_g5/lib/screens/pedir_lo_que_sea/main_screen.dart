@@ -1,21 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:isw_implementacion_us_08_g5/controllers/MainController.dart';
+import 'package:isw_implementacion_us_08_g5/enums/enum.dart';
 import 'package:isw_implementacion_us_08_g5/models/Direccion.dart';
-import 'package:isw_implementacion_us_08_g5/providers/InformacionEntrega.dart';
-import 'package:isw_implementacion_us_08_g5/providers/InformacionRetiro.dart';
+import 'package:isw_implementacion_us_08_g5/providers/DeliveryAddressInformation.dart';
+import 'package:isw_implementacion_us_08_g5/providers/PickupAddressInformation.dart';
 import 'package:isw_implementacion_us_08_g5/resources/Strings.dart';
 import 'package:isw_implementacion_us_08_g5/screens/pedir_lo_que_sea/QueBuscamosScreen.dart';
 import 'package:isw_implementacion_us_08_g5/screens/pedir_lo_que_sea/dondeBuscar_screen.dart';
 import 'package:isw_implementacion_us_08_g5/screens/pedir_lo_que_sea/dondeEntregar_screen.dart';
-import 'package:isw_implementacion_us_08_g5/screens/pedir_lo_que_sea/queBuscar_screen.dart';
+
 import 'package:provider/provider.dart';
 
 class PedirLoQueSeaMainScreen extends StatelessWidget {
-  InformacionRetiro _direccionRetiroProvider;
-  InformacionEntrega _informacionEntrega;
+  PickupAddressInformation _direccionRetiroProvider;
+  DeliveryAddressInformation _informacionEntrega;
+  MainController _mainController;
   @override
   Widget build(BuildContext context) {
-    _direccionRetiroProvider = Provider.of<InformacionRetiro>(context);
-    _informacionEntrega = Provider.of<InformacionEntrega>(context);
+    _direccionRetiroProvider = Provider.of<PickupAddressInformation>(context);
+    _informacionEntrega = Provider.of<DeliveryAddressInformation>(context);
+    _mainController = Provider.of<MainController>(context);
+
     Direccion direccionRetiro = _direccionRetiroProvider.getDireccion;
 
     return Scaffold(
@@ -57,9 +62,9 @@ class PedirLoQueSeaMainScreen extends StatelessWidget {
                 ListTile(
                   title: Text(Strings.DONDE_LO_ENTREGAMOS),
                   trailing: Icon(Icons.edit, color: Colors.redAccent),
-                  subtitle: _informacionEntrega.getCalle.isEmpty
+                  subtitle: _informacionEntrega.getDireccion.getCalle.isEmpty
                       ? null
-                      : Text(_informacionEntrega.getCalle),
+                      : Text(_informacionEntrega.getDireccion.getCalle),
                   onTap: () {
                     Navigator.push(
                         context,
@@ -115,10 +120,14 @@ class PedirLoQueSeaMainScreen extends StatelessWidget {
   }
 
   _onPressedEnviar() {
-    if (_direccionRetiroProvider.isReady) {
+    if (_mainController.isValid()) {
       print("Enviando pedido");
     } else {
-      print("chupala puto");
+      switch (_mainController.whoIsNotReady()) {
+        case Screens.pickupInformation:
+          break;
+        default:
+      }
     }
   }
 }

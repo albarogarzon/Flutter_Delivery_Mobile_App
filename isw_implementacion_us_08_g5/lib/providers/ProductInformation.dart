@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
-class InformacionDeProducto extends ChangeNotifier {
+class ProductInformation extends ChangeNotifier {
   String _descripcion;
 
   // Getters

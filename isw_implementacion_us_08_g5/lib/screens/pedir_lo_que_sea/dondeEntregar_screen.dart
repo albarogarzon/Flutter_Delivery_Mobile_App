@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_place_picker/google_maps_place_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:isw_implementacion_us_08_g5/components/ListoButton.dart';
 import 'package:isw_implementacion_us_08_g5/models/Direccion.dart';
-import 'package:isw_implementacion_us_08_g5/providers/InformacionEntrega.dart';
-import 'package:isw_implementacion_us_08_g5/providers/InformacionRetiro.dart';
-import 'package:isw_implementacion_us_08_g5/validators/InformacionEntregaValidator.dart';
-import 'package:isw_implementacion_us_08_g5/validators/InformacionRetiroValidator.dart';
+import 'package:isw_implementacion_us_08_g5/providers/DeliveryAddressInformation.dart';
+import 'package:isw_implementacion_us_08_g5/providers/PickupAddressInformation.dart';
+import 'package:isw_implementacion_us_08_g5/resources/Strings.dart';
+import 'package:isw_implementacion_us_08_g5/validators/DeliveryAddressInformationValidator.dart';
+import 'package:isw_implementacion_us_08_g5/validators/PickupAddressInformationValidator.dart';
 import 'package:provider/provider.dart';
 
 class DondeEntregarScreen extends StatefulWidget {
@@ -16,36 +18,59 @@ class DondeEntregarScreen extends StatefulWidget {
 }
 
 class _DondeEntregarScreenState extends State<DondeEntregarScreen> {
-  InformacionEntrega _informacionEntrega;
-  InformacionEntregaValidator _validator;
-  TextEditingController _addressTextFiedlController;
+  TextEditingController _telefonoFieldController;
+  TextEditingController _calleFieldController;
+  TextEditingController _pisoFieldController;
+  TextEditingController _departamentoFieldController;
+  TextEditingController _referenciasFieldController;
 
+  DeliveryAddressInformationValidator _validator;
+  DeliveryAddressInformation _informacionEntrega;
   @override
   void initState() {
+    _validator = Provider.of<DeliveryAddressInformationValidator>(context,
+        listen: false);
+    _validator.setErrorWithoutNotifyListeners = false;
+
     _informacionEntrega =
-        Provider.of<InformacionEntrega>(context, listen: false);
-    _addressTextFiedlController =
+        Provider.of<DeliveryAddressInformation>(context, listen: false);
+
+    // Text Field Controllers
+    _calleFieldController =
         TextEditingController(text: _informacionEntrega.getDireccion.getCalle);
+    _telefonoFieldController =
+        TextEditingController(text: _informacionEntrega.getTelefono);
+    _pisoFieldController =
+        TextEditingController(text: _informacionEntrega.getDireccion.getPiso);
+    _departamentoFieldController = TextEditingController(
+        text: _informacionEntrega.getDireccion.getNumDepartamento);
+    _referenciasFieldController = TextEditingController(
+        text: _informacionEntrega.getDireccion.getReferencias);
+
     super.initState();
   }
 
   @override
   void dispose() {
-    _validator.error = false;
-    _addressTextFiedlController.dispose();
+    // Dispose controllers
+    _calleFieldController.dispose();
+    _pisoFieldController.dispose();
+    _referenciasFieldController.dispose();
+    _departamentoFieldController.dispose();
+    _telefonoFieldController.dispose();
 
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    _validator = Provider.of<InformacionEntregaValidator>(context);
+    _validator = Provider.of<DeliveryAddressInformationValidator>(context);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
           centerTitle: true,
-          title: Text("¿Dónde entregamos?"),
+          title: Text(Strings.DONDE_LO_ENTREGAMOS),
           backgroundColor: Colors.redAccent),
       body: Container(
         height: double.maxFinite,
@@ -63,14 +88,8 @@ class _DondeEntregarScreenState extends State<DondeEntregarScreen> {
   }
 
   _buildSubmitButton() {
-    return Container(
-      width: double.maxFinite,
-      child: RaisedButton(
-        color: Colors.redAccent,
-        onPressed: _onPressedSubmit,
-        child: const Text('Listo',
-            style: TextStyle(fontSize: 20, color: Colors.white)),
-      ),
+    return ListoButton(
+      onPressed: _listo,
     );
   }
 
@@ -81,35 +100,49 @@ class _DondeEntregarScreenState extends State<DondeEntregarScreen> {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisSize: MainAxisSize.max,
       children: [
-        TextField(
-          controller: _addressTextFiedlController,
-          decoration: InputDecoration(
-            suffixIcon: IconButton(
-              icon: Icon(Icons.my_location),
-              onPressed: _onPressedSelectAddress,
+        Selector<DeliveryAddressInformationValidator, bool>(
+          selector: (
+            _,
+            validator,
+          ) =>
+              validator.getCalleFieldError,
+          builder: (_, error, __) => TextField(
+            keyboardType: TextInputType.streetAddress,
+            controller: _calleFieldController,
+            decoration: InputDecoration(
+              suffixIcon: IconButton(
+                icon: Icon(Icons.my_location),
+                onPressed: _onPressedSelectAddress,
+              ),
+              labelText: Strings.CALLE_Y_NUMERO,
+              errorText: error ? Strings.CALLE_Y_NUMERO_ERROR : null,
             ),
-            labelText: 'Calle y número',
-            errorText: _validator.error ? "Debe ingresar calle y numero" : null,
           ),
         ),
         TextField(
-          decoration: InputDecoration(labelText: 'Piso'),
+          decoration: InputDecoration(labelText: Strings.PISO),
         ),
         TextField(
-          decoration: InputDecoration(labelText: 'Departamento'),
+          decoration: InputDecoration(labelText: Strings.DEPARTAMENTO),
         ),
+        Selector<DeliveryAddressInformationValidator, bool>(
+            selector: (
+              _,
+              validator,
+            ) =>
+                validator.getTelefonoFieldError,
+            builder: (_, error, __) => TextField(
+                  keyboardType: TextInputType.phone,
+                  controller: _telefonoFieldController,
+                  decoration: InputDecoration(
+                      errorText: error ? Strings.TELEFONO_ERROR : null,
+                      labelText: Strings.TELEFONO,
+                      helperText: Strings.TELEFONO_HELPER_TEXT),
+                )),
         TextField(
           decoration: InputDecoration(
-              labelText: 'Teléfono',
-              helperText:
-                  "Para poder llamarte ante cualquier problema con tu pedido",
-              errorText:
-                  _validator.error ? "Debe ingresar calle y numero" : null),
-        ),
-        TextField(
-          decoration: InputDecoration(
-              labelText: 'Referencias',
-              helperText: "Ej: Calles cercanas, ¿Por quién preguntamos?"),
+              labelText: Strings.REFERENCIAS,
+              helperText: Strings.REFERENCIAS_HELPER_TEXT),
         ),
       ],
     );
@@ -125,7 +158,7 @@ class _DondeEntregarScreenState extends State<DondeEntregarScreen> {
         useCurrentLocation: false,
         selectInitialPosition: false,
         onPlacePicked: (result) {
-          _addressTextFiedlController.text = result.formattedAddress;
+          _calleFieldController.text = result.formattedAddress;
 
           Navigator.of(context).pop();
         },
@@ -133,16 +166,28 @@ class _DondeEntregarScreenState extends State<DondeEntregarScreen> {
     }));
   }
 
-  void _onPressedSubmit() {
-    if (this.mounted) {
-      String calle = this._addressTextFiedlController.text;
-      _validator.validateFields(calle);
-      if (_validator.error) {
-        return;
-      } else {
-        this._informacionEntrega.setCalle = calle;
-        Navigator.of(context).pop();
-      }
+  void _listo() {
+    String calle = this._calleFieldController.text;
+    String telefono = this._telefonoFieldController.text;
+
+    _validator.validateFields(calle, telefono);
+    _saveData();
+  }
+
+  void _saveData() {
+    String calle = this._calleFieldController.text;
+    String telefono = this._telefonoFieldController.text;
+    String piso = this._pisoFieldController.text;
+    String departamento = this._departamentoFieldController.text;
+    String referencias = this._referenciasFieldController.text;
+
+    if (_validator.error) {
+      return;
+    } else {
+      this
+          ._informacionEntrega
+          .saveData(calle, piso, departamento, telefono, referencias);
+      Navigator.of(context).pop();
     }
   }
 }

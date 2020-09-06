@@ -1,10 +1,11 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
-class InformacionRetiroValidator extends ChangeNotifier {
+class AddressInformationValidator extends ChangeNotifier {
   bool _validatorError;
   bool _validatorCalleError;
   bool _validatorTelefonoError;
-  InformacionRetiroValidator() {
+
+  AddressInformationValidator() {
     this._validatorError = false;
     this._validatorCalleError = false;
     this._validatorTelefonoError = false;

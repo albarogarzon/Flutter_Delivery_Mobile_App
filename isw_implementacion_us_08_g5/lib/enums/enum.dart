@@ -1,0 +1,1 @@
+enum Screens { pickupInformation, deliveryInformation }

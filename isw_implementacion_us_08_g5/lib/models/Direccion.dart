@@ -3,8 +3,8 @@ import 'package:isw_implementacion_us_08_g5/models/Ciudad.dart';
 class Direccion {
   Ciudad _ciudad;
   String _calle;
-  int _piso;
-  int _numeroDepartamento;
+  String _piso;
+  String _numeroDepartamento;
   String _referencias;
 
   Direccion() {
@@ -24,8 +24,8 @@ class Direccion {
   String get getCalle => this._calle;
   Ciudad get getCiudad => this._ciudad;
   String get getReferencias => this._referencias;
-  int get getPiso => this._piso;
-  int get getNumDepartamento => this._numeroDepartamento;
+  String get getPiso => this._piso;
+  String get getNumDepartamento => this._numeroDepartamento;
 
 // Setters
   set setCalle(String calle) {
@@ -36,11 +36,11 @@ class Direccion {
     this._ciudad = ciudad;
   }
 
-  set setPiso(int piso) {
+  set setPiso(String piso) {
     this._piso = piso;
   }
 
-  set setNumDepartamento(int numeroDepto) {
+  set setNumDepartamento(String numeroDepto) {
     this._numeroDepartamento = numeroDepto;
   }
 
