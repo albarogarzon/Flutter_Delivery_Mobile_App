@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:isw_implementacion_us_08_g5/models/Direccion.dart';
-import 'package:isw_implementacion_us_08_g5/providers/DireccionRetiroProvider.dart';
+import 'package:isw_implementacion_us_08_g5/providers/PickupAddressInformation.dart';
 import 'package:provider/provider.dart';
+import 'package:credit_card_validate/credit_card_validate.dart';
 
 class FormasDePagoScreen extends StatefulWidget {
   FormasDePagoScreen();
@@ -20,15 +21,123 @@ class _FormasDePagoScreenState extends State<FormasDePagoScreen> {
     "Forma de pago"
   ];
 
+  String creditCardNumber = '';
+  String cvvNumber = '';
+  String expirationDate = '';
+  IconData brandIcon;
+
   @override
   Widget build(BuildContext context) {
     Direccion direccionRetiro =
-        Provider.of<DireccionRetiroProvider>(context).getDireccion;
+        Provider.of<PickupAddressInformation>(context).getDireccion;
 
     return Scaffold(
       appBar: AppBar(
           title: Text("Formas De Pago"), backgroundColor: Colors.redAccent),
-      body: Column(
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: <Widget>[
+              TextField(
+                //CardNumber
+                onChanged: (String str) {
+                  setState(() {
+                    creditCardNumber = str;
+                  });
+                  String brand = CreditCardValidator.identifyCardBrand(str);
+                  IconData ccBrandIcon;
+                  if (brand != null) {
+                    if (brand == 'visa') {
+                      ccBrandIcon = Icons.credit_card;
+                    } else if (brand == 'master_card') {
+                      ccBrandIcon = Icons.credit_card;
+                      //ccBrandIcon = FontAwesomeIcons.ccMastercard;
+                    } else if (brand == 'american_express') {
+                      ccBrandIcon = Icons.credit_card;
+                      //ccBrandIcon = FontAwesomeIcons.ccAmex;
+                    } else if (brand == 'discover') {
+                      ccBrandIcon = Icons.credit_card;
+                      //ccBrandIcon = FontAwesomeIcons.ccDiscover;
+                    }
+                  }
+                  setState(() {
+                    brandIcon = ccBrandIcon;
+                  });
+                },
+                decoration: InputDecoration(
+                    labelText: 'Número de Tarjeta',
+                    //suffixIcon: brandIcon != null ? FaIcon(brandIcon, size: 32,) : null),
+                    suffixIcon: brandIcon != null
+                        ? Icon(
+                            brandIcon,
+                            size: 32,
+                          )
+                        : null),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              creditCardNumber.length < 16
+                  ? Text('Por favor ingrese por lo menos 16 números')
+                  : CreditCardValidator.isCreditCardValid(
+                          cardNumber: creditCardNumber) && CreditCardValidator.identifyCardBrand(creditCardNumber) == 'visa'
+                      ? Text(
+                          'La tarjeta de crédito es válida',
+                          style: TextStyle(color: Colors.green),
+                        )
+                      : Text(
+                          'La tarjeta de crédito es inválida o no es VISA',
+                          style: TextStyle(color: Colors.red),
+                        ),
+              TextField(
+                //  CVV
+                onChanged: (String str) {
+                  setState(() {
+                    cvvNumber = str;
+                  });
+                },
+                decoration: InputDecoration(
+                  labelText: 'CVV',
+                  //suffixIcon: brandIcon != null ? FaIcon(brandIcon, size: 32,) : null),
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              cvvNumber.length < 3
+                  ? Text('Por favor ingrese por lo menos 3 números')
+                  : Text(
+                      'El número de CVV es válido',
+                      style: TextStyle(color: Colors.green),
+                    ),
+              TextField(
+                //CARD EXPIRATION
+                onChanged: (String str) {
+                  setState(() {
+                    expirationDate = str;
+                  });
+                },
+                decoration: InputDecoration(
+                  labelText: 'MM/YY',
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              expirationDate.length != 5
+                  ? Text('Por favor ingrese una fecha válida (MM/YY)')
+                  : Text(
+                      'La fecha de vencimiento es válida',
+                      style: TextStyle(color: Colors.green),
+                    ),
+            ],
+          ),
+        ),
+      ),
+      // This trailing comma makes auto-formatting nicer for build methods.
+
+      /*Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -45,9 +154,8 @@ class _FormasDePagoScreenState extends State<FormasDePagoScreen> {
               MyCustomForm()
             ],
           )),
-          
         ],
-      ),
+      ),*/
     );
   }
 }
@@ -114,7 +222,8 @@ class MyCustomFormState extends State<MyCustomForm> {
               }
             },
             child: Text('Listo'),
-          )
+          ),
+          _buildSubmitButton(),
         ]));
   }
 }
@@ -163,12 +272,12 @@ class _SecondScreenTestState extends State<SecondScreenTest> {
 
   @override
   Widget build(BuildContext context) {
-    final DireccionRetiroProvider direccionRetiro =
-        Provider.of<DireccionRetiroProvider>(context);
-    controller.text = direccionRetiro.getDireccion.calle;
+    final PickupAddressInformation direccionRetiro =
+        Provider.of<PickupAddressInformation>(context);
+    controller.text = direccionRetiro.getDireccion.getCalle;
     return Scaffold(
       floatingActionButton: FloatingActionButton(onPressed: () {
-        direccionRetiro.setCalle(controller.text);
+        // direccionRetiro.setCalle(controller.text);
       }),
       body: Center(
           child: Container(
@@ -180,4 +289,16 @@ class _SecondScreenTestState extends State<SecondScreenTest> {
       )),
     );
   }
+}
+
+_buildSubmitButton() {
+  return Container(
+    width: double.maxFinite,
+    child: RaisedButton(
+      color: Colors.redAccent,
+      onPressed: () {},
+      child: const Text('Listo',
+          style: TextStyle(fontSize: 20, color: Colors.white)),
+    ),
+  );
 }

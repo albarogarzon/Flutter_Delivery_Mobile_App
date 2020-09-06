@@ -1,78 +1,134 @@
 import 'package:flutter/material.dart';
+import 'package:isw_implementacion_us_08_g5/controllers/MainController.dart';
+import 'package:isw_implementacion_us_08_g5/enums/enum.dart';
 import 'package:isw_implementacion_us_08_g5/models/Direccion.dart';
-import 'package:isw_implementacion_us_08_g5/providers/DireccionRetiroProvider.dart';
+import 'package:isw_implementacion_us_08_g5/providers/DeliveryAddressInformation.dart';
+import 'package:isw_implementacion_us_08_g5/providers/PickupAddressInformation.dart';
+import 'package:isw_implementacion_us_08_g5/resources/Strings.dart';
+import 'package:isw_implementacion_us_08_g5/screens/pedir_lo_que_sea/QueBuscamosScreen.dart';
+import 'package:isw_implementacion_us_08_g5/screens/pedir_lo_que_sea/dondeBuscar_screen.dart';
+import 'package:isw_implementacion_us_08_g5/screens/pedir_lo_que_sea/dondeEntregar_screen.dart';
+
 import 'package:provider/provider.dart';
 
-class PedirLoQueSeaMainScreen extends StatefulWidget {
-  PedirLoQueSeaMainScreen();
-
-  @override
-  _PedirLoQueSeaMainScreenState createState() =>
-      _PedirLoQueSeaMainScreenState();
-}
-
-class _PedirLoQueSeaMainScreenState extends State<PedirLoQueSeaMainScreen> {
-  final List<String> listItemTitles = [
-    "Crea tu pedido",
-    "¿Qué buscamos?",
-    "¿Dónde lo buscamos?",
-    "¿Dónde lo entregamos?",
-    "¿Cuando queres recibirlo?",
-    "Forma de pago"
-  ];
-
+class PedirLoQueSeaMainScreen extends StatelessWidget {
+  PickupAddressInformation _direccionRetiroProvider;
+  DeliveryAddressInformation _informacionEntrega;
+  MainController _mainController;
   @override
   Widget build(BuildContext context) {
-    Direccion direccionRetiro =
-        Provider.of<DireccionRetiroProvider>(context).getDireccion;
+    _direccionRetiroProvider = Provider.of<PickupAddressInformation>(context);
+    _informacionEntrega = Provider.of<DeliveryAddressInformation>(context);
+    _mainController = Provider.of<MainController>(context);
+
+    Direccion direccionRetiro = _direccionRetiroProvider.getDireccion;
 
     return Scaffold(
       appBar: AppBar(
-          title: Text("Pedí lo que sea"), backgroundColor: Colors.redAccent),
+          title: Text(Strings.PEDI_LO_QUE_SEA),
+          backgroundColor: Colors.redAccent),
       body: Column(
+        verticalDirection: VerticalDirection.down,
+        textDirection: TextDirection.ltr,
+        mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
+            flex: 8,
             child: ListView(
               children: [
-                ListItem(
+                ListTile(
                   title: Text(
-                    "Crea tu pedido",
+                    Strings.CREA_TU_PEDIDO,
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                   ),
                 ),
                 _divider,
-                ListItem(
-                  title: Text("¿Dónde lo buscamos?"),
-                  subtitle: direccionRetiro.calle.isEmpty
+                ListTile(
+                  title: Text(Strings.DONDE_LO_BUSCAMOS),
+                  subtitle: direccionRetiro.getCalle.isEmpty
                       ? null
-                      : Text(direccionRetiro.calle),
-                  icon: Icon(Icons.edit, color: Colors.redAccent),
+                      : Text(direccionRetiro.getCalle),
+                  trailing: Icon(Icons.edit, color: Colors.redAccent),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => DondeBuscarScreen()));
+                  },
                 ),
                 _divider,
-                ListItem(
-                  title: Text("¿Dónde lo entregamos?"),
-                  icon: Icon(Icons.edit, color: Colors.redAccent),
+                ListTile(
+                  title: Text(Strings.DONDE_LO_ENTREGAMOS),
+                  trailing: Icon(Icons.edit, color: Colors.redAccent),
+                  subtitle: _informacionEntrega.getDireccion.getCalle.isEmpty
+                      ? null
+                      : Text(_informacionEntrega.getDireccion.getCalle),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => DondeEntregarScreen()));
+                  },
                 ),
                 _divider,
-                ListItem(
-                  title: Text("¿Cuándo queres recibirlo?"),
-                  icon: Icon(Icons.edit, color: Colors.redAccent),
+                ListTile(
+                  title: Text(Strings.QUE_BUSCAMOS),
+                  trailing: Icon(Icons.edit, color: Colors.redAccent),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => QueBuscamosScreen()));
+                  },
                 ),
                 _divider,
-                ListItem(
-                  title: Text("Forma de pago"),
-                  icon: Icon(Icons.edit, color: Colors.redAccent),
+                ListTile(
+                  title: Text(Strings.CUANDO_QUERES_RECIBIRLO),
+                  trailing: Icon(Icons.edit, color: Colors.redAccent),
+                ),
+                _divider,
+                ListTile(
+                  title: Text(Strings.FORMA_DE_PAGO),
+                  trailing: Icon(Icons.edit, color: Colors.redAccent),
                 ),
                 _divider,
               ],
             ),
           ),
-          RaisedButton(onPressed: null)
+          Expanded(
+            flex: 1,
+            child: SizedBox(
+              width: double.infinity,
+              child: RaisedButton(
+                  elevation: 0,
+                  child: Text(
+                    "Enviar pedido",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: Colors.white),
+                  ),
+                  color: Colors.redAccent,
+                  onPressed: _onPressedEnviar),
+            ),
+          )
         ],
       ),
     );
+  }
+
+  _onPressedEnviar() {
+    if (_mainController.isValid()) {
+      print("Enviando pedido");
+    } else {
+      switch (_mainController.whoIsNotReady()) {
+        case Screens.pickupInformation:
+          break;
+        default:
+      }
+    }
   }
 }
 
@@ -81,60 +137,3 @@ final Divider _divider = Divider(
   indent: 10,
   height: 0,
 );
-
-class ListItem extends StatelessWidget {
-  final Widget title;
-  final Icon icon;
-  final Widget subtitle;
-  final Function onTap;
-  ListItem({this.onTap, this.subtitle, this.icon, this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      onTap: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => SecondScreenTest()));
-      },
-      subtitle: this.subtitle != null ? this.subtitle : null,
-      title: this.title != null ? this.title : null,
-      trailing: this.icon != null ? this.icon : null,
-    );
-  }
-}
-
-class SecondScreenTest extends StatefulWidget {
-  SecondScreenTest();
-
-  @override
-  _SecondScreenTestState createState() => _SecondScreenTestState();
-}
-
-class _SecondScreenTestState extends State<SecondScreenTest> {
-  final controller = TextEditingController();
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final DireccionRetiroProvider direccionRetiro =
-        Provider.of<DireccionRetiroProvider>(context);
-    controller.text = direccionRetiro.getDireccion.calle;
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(onPressed: () {
-        direccionRetiro.setCalle(controller.text);
-      }),
-      body: Center(
-          child: Container(
-        child: TextField(
-          controller: controller,
-        ),
-        width: 100,
-        height: 50,
-      )),
-    );
-  }
-}

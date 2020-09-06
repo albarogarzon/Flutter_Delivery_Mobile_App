@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_place_picker/google_maps_place_picker.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:isw_implementacion_us_08_g5/components/ListoButton.dart';
 import 'package:isw_implementacion_us_08_g5/models/Direccion.dart';
-import 'package:isw_implementacion_us_08_g5/providers/DireccionRetiroProvider.dart';
+import 'package:isw_implementacion_us_08_g5/providers/DeliveryAddressInformation.dart';
+import 'package:isw_implementacion_us_08_g5/providers/PickupAddressInformation.dart';
+import 'package:isw_implementacion_us_08_g5/resources/Strings.dart';
+import 'package:isw_implementacion_us_08_g5/validators/DeliveryAddressInformationValidator.dart';
+import 'package:isw_implementacion_us_08_g5/validators/PickupAddressInformationValidator.dart';
 import 'package:provider/provider.dart';
 
 class DondeEntregarScreen extends StatefulWidget {
@@ -11,56 +18,177 @@ class DondeEntregarScreen extends StatefulWidget {
 }
 
 class _DondeEntregarScreenState extends State<DondeEntregarScreen> {
-  final List<String> listItemTitles = [
-    "Crea tu pedido",
-    "¿Qué buscamos?",
-    "¿Dónde lo buscamos?",
-    "¿Dónde lo entregamos?",
-    "¿Cuando queres recibirlo?",
-    "Forma de pago"
-  ];
+  TextEditingController _telefonoFieldController;
+  TextEditingController _calleFieldController;
+  TextEditingController _pisoFieldController;
+  TextEditingController _departamentoFieldController;
+  TextEditingController _referenciasFieldController;
+
+  DeliveryAddressInformationValidator _validator;
+  DeliveryAddressInformation _informacionEntrega;
+  @override
+  void initState() {
+    _validator = Provider.of<DeliveryAddressInformationValidator>(context,
+        listen: false);
+    _validator.setErrorWithoutNotifyListeners = false;
+
+    _informacionEntrega =
+        Provider.of<DeliveryAddressInformation>(context, listen: false);
+
+    // Text Field Controllers
+    _calleFieldController =
+        TextEditingController(text: _informacionEntrega.getDireccion.getCalle);
+    _telefonoFieldController =
+        TextEditingController(text: _informacionEntrega.getTelefono);
+    _pisoFieldController =
+        TextEditingController(text: _informacionEntrega.getDireccion.getPiso);
+    _departamentoFieldController = TextEditingController(
+        text: _informacionEntrega.getDireccion.getNumDepartamento);
+    _referenciasFieldController = TextEditingController(
+        text: _informacionEntrega.getDireccion.getReferencias);
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    // Dispose controllers
+    _calleFieldController.dispose();
+    _pisoFieldController.dispose();
+    _referenciasFieldController.dispose();
+    _departamentoFieldController.dispose();
+    _telefonoFieldController.dispose();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    Direccion direccionRetiro =
-        Provider.of<DireccionRetiroProvider>(context).getDireccion;
+    _validator = Provider.of<DeliveryAddressInformationValidator>(context);
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
-          title: Text("¿Dónde entregamos?"), backgroundColor: Colors.redAccent),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(
-              child: ListView(
-            children: [
-              TextFormField(
-                decoration:
-                    InputDecoration(labelText: 'Calle y número de puerta'),
-              ),
-              _divider,
-              TextFormField(
-                decoration: InputDecoration(labelText: 'Departamento'),
-              ),
-              _divider,
-              TextFormField(
-                decoration: InputDecoration(labelText: 'Teléfono'),
-              ),
-              _divider,
-              TextFormField(
-                decoration: InputDecoration(labelText: 'Notas al repartidor'),
-              ),
-              _divider
-            ],
-          )),
-          RaisedButton(
-            onPressed: () {},
-            child: const Text('Listo', style: TextStyle(fontSize: 20)),
-          ),
-        ],
+          centerTitle: true,
+          title: Text(Strings.DONDE_LO_ENTREGAMOS),
+          backgroundColor: Colors.redAccent),
+      body: Container(
+        height: double.maxFinite,
+        width: double.maxFinite,
+        margin: EdgeInsets.only(top: 10, right: 10, left: 10),
+        child: Column(
+          verticalDirection: VerticalDirection.down,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          children: [_buildForm(), Spacer(), _buildSubmitButton()],
+        ),
       ),
     );
+  }
+
+  _buildSubmitButton() {
+    return ListoButton(
+      onPressed: _listo,
+    );
+  }
+
+  _buildForm() {
+    return Column(
+      verticalDirection: VerticalDirection.down,
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Selector<DeliveryAddressInformationValidator, bool>(
+          selector: (
+            _,
+            validator,
+          ) =>
+              validator.getCalleFieldError,
+          builder: (_, error, __) => TextField(
+            keyboardType: TextInputType.streetAddress,
+            controller: _calleFieldController,
+            decoration: InputDecoration(
+              suffixIcon: IconButton(
+                icon: Icon(Icons.my_location),
+                onPressed: _onPressedSelectAddress,
+              ),
+              labelText: Strings.CALLE_Y_NUMERO,
+              errorText: error ? Strings.CALLE_Y_NUMERO_ERROR : null,
+            ),
+          ),
+        ),
+        TextField(
+          decoration: InputDecoration(labelText: Strings.PISO),
+        ),
+        TextField(
+          decoration: InputDecoration(labelText: Strings.DEPARTAMENTO),
+        ),
+        Selector<DeliveryAddressInformationValidator, bool>(
+            selector: (
+              _,
+              validator,
+            ) =>
+                validator.getTelefonoFieldError,
+            builder: (_, error, __) => TextField(
+                  keyboardType: TextInputType.phone,
+                  controller: _telefonoFieldController,
+                  decoration: InputDecoration(
+                      errorText: error ? Strings.TELEFONO_ERROR : null,
+                      labelText: Strings.TELEFONO,
+                      helperText: Strings.TELEFONO_HELPER_TEXT),
+                )),
+        TextField(
+          decoration: InputDecoration(
+              labelText: Strings.REFERENCIAS,
+              helperText: Strings.REFERENCIAS_HELPER_TEXT),
+        ),
+      ],
+    );
+  }
+
+  void _onPressedSelectAddress() {
+    _validator.error = _validator.error ? false : false;
+    print(_validator.error);
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return PlacePicker(
+        apiKey: 'AIzaSyCv8gS5tnyK0W2jQB1C3bbBC5Fa6NTKIik',
+        initialPosition: LatLng(-31.4567844, -64.183108),
+        useCurrentLocation: false,
+        selectInitialPosition: false,
+        onPlacePicked: (result) {
+          _calleFieldController.text = result.formattedAddress;
+
+          Navigator.of(context).pop();
+        },
+      );
+    }));
+  }
+
+  void _listo() {
+    String calle = this._calleFieldController.text;
+    String telefono = this._telefonoFieldController.text;
+
+    _validator.validateFields(calle, telefono);
+    _saveData();
+  }
+
+  void _saveData() {
+    String calle = this._calleFieldController.text;
+    String telefono = this._telefonoFieldController.text;
+    String piso = this._pisoFieldController.text;
+    String departamento = this._departamentoFieldController.text;
+    String referencias = this._referenciasFieldController.text;
+
+    if (_validator.error) {
+      return;
+    } else {
+      this
+          ._informacionEntrega
+          .saveData(calle, piso, departamento, telefono, referencias);
+      Navigator.of(context).pop();
+    }
   }
 }
 
@@ -69,60 +197,3 @@ final Divider _divider = Divider(
   indent: 10,
   height: 0,
 );
-
-class ListItem extends StatelessWidget {
-  final Widget title;
-  final Icon icon;
-  final Widget subtitle;
-  final Function onTap;
-  ListItem({this.onTap, this.subtitle, this.icon, this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      onTap: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => SecondScreenTest()));
-      },
-      subtitle: this.subtitle != null ? this.subtitle : null,
-      title: this.title != null ? this.title : null,
-      trailing: this.icon != null ? this.icon : null,
-    );
-  }
-}
-
-class SecondScreenTest extends StatefulWidget {
-  SecondScreenTest();
-
-  @override
-  _SecondScreenTestState createState() => _SecondScreenTestState();
-}
-
-class _SecondScreenTestState extends State<SecondScreenTest> {
-  final controller = TextEditingController();
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final DireccionRetiroProvider direccionRetiro =
-        Provider.of<DireccionRetiroProvider>(context);
-    controller.text = direccionRetiro.getDireccion.calle;
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(onPressed: () {
-        direccionRetiro.setCalle(controller.text);
-      }),
-      body: Center(
-          child: Container(
-        child: TextField(
-          controller: controller,
-        ),
-        width: 100,
-        height: 50,
-      )),
-    );
-  }
-}
