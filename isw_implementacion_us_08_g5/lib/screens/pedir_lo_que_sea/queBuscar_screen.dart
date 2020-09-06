@@ -1,4 +1,4 @@
-import 'dart:ffi';
+/* import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -134,3 +134,4 @@ class _QueBuscamosScreenState extends State<QueBuscamosScreen> {
     return snackBar; */
   
 }
+ */

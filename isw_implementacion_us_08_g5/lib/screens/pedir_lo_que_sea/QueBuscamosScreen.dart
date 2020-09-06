@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:isw_implementacion_us_08_g5/resources/Strings.dart';
 
 class QueBuscamosScreen extends StatefulWidget {
@@ -16,11 +17,15 @@ class _QueBuscamosScreenState extends State<QueBuscamosScreen> {
   final picker = ImagePicker();
 
   Future getImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
-    final bytes = await pickedFile.readAsBytes();
-    print("BYTES:${bytes.length}");
+    //final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    List<File> pickedFile = await FilePicker.getMultiFile(
+          type: FileType.custom,
+          allowedExtensions: ['jpg'],
+        );
+    //final bytes = await pickedFile.readAsBytes();
+    //print("BYTES:${bytes.length}");
     setState(() {
-      _image = File(pickedFile.path);
+      _image = File(pickedFile[0].path);
     });
   }
 
@@ -43,7 +48,7 @@ class _QueBuscamosScreenState extends State<QueBuscamosScreen> {
           mainAxisSize: MainAxisSize.max,
           children: [
             TextField(
-              decoration: InputDecoration(labelText: 'Ingresá una descripción'),
+              decoration: InputDecoration(labelText: 'Ingresá una descripciónn'),
             ),
             _buildTitle(),
             _divider,
@@ -75,7 +80,7 @@ class _QueBuscamosScreenState extends State<QueBuscamosScreen> {
   }
 
   checkFileSize(path) {
-    print("Entro a check");
+    print("Entro a check.PATH: ${path}");
     var fileSizeLimit = 5000000;
     File f = new File(path);
     var s = f.lengthSync();
@@ -83,7 +88,6 @@ class _QueBuscamosScreenState extends State<QueBuscamosScreen> {
     var fileSizeInKB = s / 1024;
     // Convert the KB to MegaBytes (1 MB = 1024 KBytes)
     var fileSizeInMB = fileSizeInKB / 1024;
-
     if (s > fileSizeLimit) {
       print("File size greater than the limit$s");
       return false;
