@@ -62,7 +62,6 @@ class _DondeLoBuscamosScreenState extends State<DondeLoBuscamosScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       appBar: AppBar(
           centerTitle: true,
           title: Text(Strings.DONDE_LO_BUSCAMOS),
@@ -76,7 +75,14 @@ class _DondeLoBuscamosScreenState extends State<DondeLoBuscamosScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
-          children: [_buildForm(), Spacer(), _buildSubmitButton()],
+          children: [
+            Expanded(
+              child: ListView(
+                children: [_buildForm()],
+              ),
+            ),
+            _buildSubmitButton()
+          ],
         ),
       ),
     );

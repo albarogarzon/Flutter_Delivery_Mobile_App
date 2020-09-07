@@ -8,6 +8,7 @@ import 'package:isw_implementacion_us_08_g5/providers/ProductInformation.dart';
 import 'package:isw_implementacion_us_08_g5/screens/pedir_lo_que_sea/MainScreen.dart';
 
 import 'package:isw_implementacion_us_08_g5/validators/DeliveryAddressInformationValidator.dart';
+import 'package:isw_implementacion_us_08_g5/validators/PaymentInformationValidator.dart';
 import 'package:isw_implementacion_us_08_g5/validators/PickupAddressInformationValidator.dart';
 import 'package:provider/provider.dart';
 
@@ -26,14 +27,22 @@ class MyApp extends StatelessWidget {
             value: PickupAddressInformationValidator()),
         ChangeNotifierProvider.value(
             value: DeliveryAddressInformationValidator()),
+        ChangeNotifierProvider(
+          create: (BuildContext context) => PaymentInformationValidator(),
+        ),
         ChangeNotifierProvider.value(value: PickupAddressInformation()),
         ChangeNotifierProvider.value(value: DeliveryAddressInformation()),
         ChangeNotifierProvider<DeliveryTimeInformation>(
             create: (BuildContext context) => DeliveryTimeInformation()),
         ChangeNotifierProvider<ProductInformation>(
             create: (BuildContext context) => ProductInformation()),
-        ChangeNotifierProvider<PaymentInformation>(
-            create: (BuildContext context) => PaymentInformation()),
+        ChangeNotifierProxyProvider2<ProductInformation,
+                PaymentInformationValidator, PaymentInformation>(
+            create: (BuildContext context) => PaymentInformation(null, null),
+            update: (context, productInformation, paymentInformationValidator,
+                    paymentInformation) =>
+                PaymentInformation(
+                    productInformation, paymentInformationValidator)),
         ChangeNotifierProxyProvider4<
                 PickupAddressInformation,
                 DeliveryAddressInformation,

@@ -68,7 +68,6 @@ class _DondeLoEntregamosScreenState extends State<DondeLoEntregamosScreen> {
     _validator = Provider.of<DeliveryAddressInformationValidator>(context);
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       appBar: AppBar(
           centerTitle: true,
           title: Text(Strings.DONDE_LO_ENTREGAMOS),
@@ -82,7 +81,16 @@ class _DondeLoEntregamosScreenState extends State<DondeLoEntregamosScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
-          children: [_buildForm(), Spacer(), _buildSubmitButton()],
+          children: [
+            Expanded(
+              child: ListView(
+                children: [
+                  _buildForm(),
+                ],
+              ),
+            ),
+            _buildSubmitButton()
+          ],
         ),
       ),
     );

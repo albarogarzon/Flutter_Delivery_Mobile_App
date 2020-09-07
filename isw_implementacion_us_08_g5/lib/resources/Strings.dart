@@ -49,4 +49,8 @@ class Strings {
   static const EFECTIVO = "Efectivo";
   static const TARJETA_DE_CREDITO = "Tarjeta de crédito";
   static const CON_CUANTO_VAS_A_PAGAR = "¿Con cuánto vas a pagar?";
+  static const NUMERO_DE_TARJETA_DE_CREDITO = "Número de tarjeta de crédito";
+  static const NOMBRE_EN_LA_TARJETA = "Nombre en la tarjeta";
+  static const FECHA_DE_VENCIMIENTO = "Fecha de vencimiento";
+  static const CODIGO_DE_SEGURIDAD = "Código de seguridad";
 }
