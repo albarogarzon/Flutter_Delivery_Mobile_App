@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:isw_implementacion_us_08_g5/models/Direccion.dart';
+import 'package:isw_implementacion_us_08_g5/models/PaymentMethod.dart';
+import 'package:isw_implementacion_us_08_g5/providers/PaymentInformation.dart';
 import 'package:isw_implementacion_us_08_g5/providers/PickupAddressInformation.dart';
+import 'package:isw_implementacion_us_08_g5/resources/Strings.dart';
 import 'package:provider/provider.dart';
+import 'package:credit_card_validate/credit_card_validate.dart';
 
 class FormaDePagoScreen extends StatefulWidget {
   FormaDePagoScreen();
@@ -11,14 +15,39 @@ class FormaDePagoScreen extends StatefulWidget {
 }
 
 class _FormaDePagoScreenState extends State<FormaDePagoScreen> {
-  final List<String> listItemTitles = [
-    "Crea tu pedido",
-    "¿Qué buscamos?",
-    "¿Dónde lo buscamos?",
-    "¿Dónde lo entregamos?",
-    "¿Cuando queres recibirlo?",
-    "Forma de pago"
+  PaymentInformation _paymentInformation;
+  PaymentMethod _selectedPaymentMethod;
+  TextEditingController _amountFieldController;
+  bool _amoutTextFieldEnabled = true;
+
+  final List<PaymentMethod> _paymentMethods = [
+    PaymentMethod('Efectivo'),
+    PaymentMethod('Tarjeta de crédito')
   ];
+
+  String creditCardNumber = '';
+  String cvvNumber = '';
+  String expirationDate = '';
+  IconData brandIcon;
+
+  @override
+  void initState() {
+    _paymentInformation = Provider.of<PaymentInformation>(
+      context,
+      listen: false,
+    );
+    _selectedPaymentMethod = _paymentInformation.getPaymentMethod;
+    _amountFieldController =
+        TextEditingController(text: _paymentInformation.getAmount);
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _amountFieldController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,155 +57,96 @@ class _FormaDePagoScreenState extends State<FormaDePagoScreen> {
     return Scaffold(
       appBar: AppBar(
           title: Text("Formas De Pago"), backgroundColor: Colors.redAccent),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(
-              child: ListView(
-            children: [
-              ListItem(
-                title: Text(
-                  "Online",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                ),
-              ),
-              _divider,
-              MyCustomForm()
-            ],
-          )),
-        ],
+      body: Container(
+        height: double.maxFinite,
+        width: double.maxFinite,
+        margin: EdgeInsets.only(top: 10, right: 10, left: 10),
+        child: Column(
+          verticalDirection: VerticalDirection.down,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            _buildTitle("Seleccioná la forma de pago"),
+            _divider,
+            _buildPaymentMethodRadioButtons(),
+            _buildTitle("Información de pago"),
+            _divider,
+            _buildPaymentInformation()
+          ],
+        ),
       ),
     );
   }
-}
 
-// Define a custom Form widget.
-class MyCustomForm extends StatefulWidget {
-  @override
-  MyCustomFormState createState() {
-    return MyCustomFormState();
-  }
-}
-
-// Define a corresponding State class.
-// This class holds data related to the form.
-class MyCustomFormState extends State<MyCustomForm> {
-  // Create a global key that uniquely identifies the Form widget
-  // and allows validation of the form.
-  //
-  // Note: This is a `GlobalKey<FormState>`,
-  // not a GlobalKey<MyCustomFormState>.
-  final _formKey = GlobalKey<FormState>();
-
-  @override
-  Widget build(BuildContext context) {
-    // Build a Form widget using the _formKey created above.
-    return Form(
-        key: _formKey,
-        child: Column(children: <Widget>[
-          // Add TextFormFields and RaisedButton here.
-          TextFormField(
-            // The validator receives the text that the user has entered.
-            validator: (value) {
-              if (value.isEmpty) {
-                return 'Debes ingresar la calle y número de puerta';
-              }
-              return null;
-            },
-            decoration: InputDecoration(hintText: "Tarjeta,,,,"),
-          ),
-          TextFormField(
-            decoration: InputDecoration(hintText: "tarjeta....."),
-          ),
-          TextFormField(
-            decoration: InputDecoration(hintText: "tarjeta...."),
-          ),
-          TextFormField(
-            validator: (value) {
-              if (value.isEmpty) {
-                return 'Debes ingresar las notas al repartidor';
-              }
-              return null;
-            },
-            decoration: InputDecoration(hintText: "Notas al repartidor"),
-          ),
-          RaisedButton(
-            onPressed: () {
-              // Validate returns true if the form is valid, otherwise false.
-              if (_formKey.currentState.validate()) {
-                // If the form is valid, display a snackbar. In the real world,
-                // you'd often call a server or save the information in a database.
-
-                Scaffold.of(context)
-                    .showSnackBar(SnackBar(content: Text('Processing Data')));
-              }
-            },
-            child: Text('Listo'),
-          )
-        ]));
-  }
-}
-
-final Divider _divider = Divider(
-  color: Colors.grey,
-  indent: 10,
-  height: 0,
-);
-
-class ListItem extends StatelessWidget {
-  final Widget title;
-  final Icon icon;
-  final Widget subtitle;
-  final Function onTap;
-  ListItem({this.onTap, this.subtitle, this.icon, this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      onTap: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => SecondScreenTest()));
-      },
-      subtitle: this.subtitle != null ? this.subtitle : null,
-      title: this.title != null ? this.title : null,
-      trailing: this.icon != null ? this.icon : null,
+  _buildPaymentInformation() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextField(
+          enabled: _amoutTextFieldEnabled,
+          controller: _amountFieldController,
+          keyboardType: TextInputType.number,
+          decoration:
+              InputDecoration(labelText: Strings.CON_CUANTO_VAS_A_PAGAR),
+        )
+      ],
     );
   }
-}
 
-class SecondScreenTest extends StatefulWidget {
-  SecondScreenTest();
-
-  @override
-  _SecondScreenTestState createState() => _SecondScreenTestState();
-}
-
-class _SecondScreenTestState extends State<SecondScreenTest> {
-  final controller = TextEditingController();
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final PickupAddressInformation direccionRetiro =
-        Provider.of<PickupAddressInformation>(context);
-    controller.text = direccionRetiro.getDireccion.getCalle;
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(onPressed: () {
-        // direccionRetiro.setCalle(controller.text);
-      }),
-      body: Center(
-          child: Container(
-        child: TextField(
-          controller: controller,
-        ),
-        width: 100,
-        height: 50,
-      )),
+  _buildPaymentMethodRadioButtons() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        RadioListTile(
+            activeColor: Colors.redAccent,
+            title: Text(Strings.EFECTIVO),
+            value: _paymentMethods[0],
+            groupValue: _selectedPaymentMethod,
+            onChanged: (paymentMethod) {
+              setState(() {
+                _selectedPaymentMethod = paymentMethod;
+                if (_paymentMethods[0] == paymentMethod) {
+                  _amoutTextFieldEnabled = true;
+                } else {
+                  _amoutTextFieldEnabled = false;
+                }
+              });
+            }),
+        RadioListTile(
+            activeColor: Colors.redAccent,
+            title: Text(Strings.TARJETA_DE_CREDITO),
+            value: _paymentMethods[1],
+            groupValue: _selectedPaymentMethod,
+            onChanged: (paymentMethod) {
+              setState(() {
+                _selectedPaymentMethod = paymentMethod;
+                // if (_paymentMethods[1] == paymentMethod) {
+                //   _amoutTextFieldEnabled = false;
+                // } else {
+                //   _amoutTextFieldEnabled = true;
+                // }
+              });
+            })
+      ],
     );
   }
+
+  _buildTitle(String titulo) {
+    return Container(
+      margin: EdgeInsets.only(top: 10),
+      width: double.infinity,
+      child: Text(
+        titulo,
+        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+
+  final Divider _divider = Divider(
+    height: 0,
+    color: Colors.grey,
+  );
 }

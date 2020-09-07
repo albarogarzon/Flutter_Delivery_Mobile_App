@@ -4,4 +4,5 @@ enum Screens {
   QueBuscamosScreen,
   FormaDePagoScreen,
   CuandoQueresRecibirloScreen,
+  DefaultScreen,
 }

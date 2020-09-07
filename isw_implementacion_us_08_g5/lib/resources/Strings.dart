@@ -46,4 +46,7 @@ class Strings {
   static const VEINTIUNO_HS = '21 Hs';
   static const VEINTIUNO_TREINTA_HS = '21:30 Hs';
   static const VEINTIDOS_HS = '22 Hs';
+  static const EFECTIVO = "Efectivo";
+  static const TARJETA_DE_CREDITO = "Tarjeta de crédito";
+  static const CON_CUANTO_VAS_A_PAGAR = "¿Con cuánto vas a pagar?";
 }
