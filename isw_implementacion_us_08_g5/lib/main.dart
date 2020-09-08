@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:isw_implementacion_us_08_g5/controllers/MainController.dart';
 import 'package:isw_implementacion_us_08_g5/providers/DeliveryAddressInformation.dart';
 import 'package:isw_implementacion_us_08_g5/screens/pedir_lo_que_sea/QueBuscamosScreen.dart';
+import 'package:isw_implementacion_us_08_g5/screens/pedir_lo_que_sea/dondeEntregar_screen.dart';
 import 'package:isw_implementacion_us_08_g5/screens/pedir_lo_que_sea/formasDePago_screen.dart';
 
 import 'package:isw_implementacion_us_08_g5/screens/pedir_lo_que_sea/main_screen.dart';
@@ -42,7 +43,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home: FormasDePagoScreen(),
+        home: DondeEntregarScreen(),
       ),
     );
   }

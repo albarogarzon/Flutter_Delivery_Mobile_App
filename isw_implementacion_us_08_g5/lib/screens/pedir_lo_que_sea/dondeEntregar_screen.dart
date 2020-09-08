@@ -26,6 +26,10 @@ class _DondeEntregarScreenState extends State<DondeEntregarScreen> {
 
   DeliveryAddressInformationValidator _validator;
   DeliveryAddressInformation _informacionEntrega;
+
+  var currentSelectedCity = "Córdoba"; //------------------ACA------------------
+  var cities = ["Córdoba", "Rio Ceballos", "Villa Allende"];
+
   @override
   void initState() {
     _validator = Provider.of<DeliveryAddressInformationValidator>(context,
@@ -143,6 +147,29 @@ class _DondeEntregarScreenState extends State<DondeEntregarScreen> {
           decoration: InputDecoration(
               labelText: Strings.REFERENCIAS,
               helperText: Strings.REFERENCIAS_HELPER_TEXT),
+        ),
+        Row(
+          children: <Widget>[
+            Text('Ciudad: '),
+            DropdownButton<String>(
+              //------------------ACA------------------
+              hint: Text("Ciudad"),
+              value: currentSelectedCity,
+              isDense: true,
+              onChanged: (newValue) {
+                setState(() {
+                  currentSelectedCity = newValue;
+                });
+                print(currentSelectedCity);
+              },
+              items: cities.map((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            )
+          ],
         ),
       ],
     );
