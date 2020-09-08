@@ -28,6 +28,11 @@ class _FormaDePagoScreenState extends State<FormaDePagoScreen> {
   TextEditingController _cardExpirationDateFieldController;
   TextEditingController _cardCodeFieldController;
 
+  int selectedYear;
+  int selectedMonth;
+  var listYears = new List<int>.generate(10, (i) => i + 2020);
+  var listMonths = new List<int>.generate(12, (i) => i + 01);
+
   bool _amoutTextFieldEnabled = false;
   bool _cardInformationEnabled = false;
 
@@ -196,20 +201,54 @@ class _FormaDePagoScreenState extends State<FormaDePagoScreen> {
                     : null),
           ),
         ),
-        Selector<PaymentInformationValidator, bool>(
-          selector: (_, validator) => validator.getCardExpirationDateError,
-          builder: (_, error, __) => TextField(
-            maxLength: 7,
-            enabled: _cardInformationEnabled,
-            controller: _cardExpirationDateFieldController,
-            keyboardType: TextInputType.datetime,
-            onChanged: null,
-            decoration: InputDecoration(
-                labelText: Strings.FECHA_DE_VENCIMIENTO,
-                errorText: error
-                    ? "Debe ingresar la fecha de vencimiento de la tarjeta"
-                    : null),
+        Container(
+          margin: EdgeInsets.only(top: 10),
+          width: double.infinity,
+          child: Text(
+            "Fecha de vencimiento",
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
+        ),
+        Row(
+          children: <Widget>[
+            Expanded(
+              child: DropdownButton<int>(
+                  hint: new Text("Mes"),
+                  value: selectedMonth,
+                  onChanged: (num newValue) {
+                    setState(() {
+                      selectedMonth = newValue;
+                    });
+                  },
+                  items: listMonths.map((int month) {
+                    return new DropdownMenuItem<int>(
+                      value: month,
+                      child: new Text(
+                        month.toString(),
+                        style: new TextStyle(color: Colors.black),
+                      ),
+                    );
+                  }).toList()),
+            ),
+            Expanded(
+                child: DropdownButton<int>(
+                    hint: new Text("Año"),
+                    value: selectedYear,
+                    onChanged: (num newValue) {
+                      setState(() {
+                        selectedYear = newValue;
+                      });
+                    },
+                    items: listYears.map((int year) {
+                      return new DropdownMenuItem<int>(
+                        value: year,
+                        child: new Text(
+                          year.toString(),
+                          style: new TextStyle(color: Colors.black),
+                        ),
+                      );
+                    }).toList()))
+          ],
         ),
         Selector<PaymentInformationValidator, bool>(
           selector: (_, validator) => validator.getCardCodeError,
