@@ -65,7 +65,7 @@ class _DondeLoBuscamosScreenState extends State<DondeLoBuscamosScreen> {
       appBar: AppBar(
           centerTitle: true,
           title: Text(Strings.DONDE_LO_BUSCAMOS),
-          backgroundColor: Colors.redAccent),
+          backgroundColor: Color(0xffA42B36)),
       body: Container(
         height: double.maxFinite,
         width: double.maxFinite,

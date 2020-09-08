@@ -82,7 +82,7 @@ class _FormaDePagoScreenState extends State<FormaDePagoScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text("Formas De Pago"), backgroundColor: Colors.redAccent),
+          title: Text("Formas De Pago"), backgroundColor: Color(0xffA42B36)),
       body: Container(
         height: double.maxFinite,
         width: double.maxFinite,
@@ -120,7 +120,7 @@ class _FormaDePagoScreenState extends State<FormaDePagoScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         RadioListTile(
-            activeColor: Colors.redAccent,
+            activeColor: Color(0xffA42B36),
             title: Text(Strings.EFECTIVO),
             value: _paymentMethods[0],
             groupValue: _selectedPaymentMethod,
@@ -134,7 +134,7 @@ class _FormaDePagoScreenState extends State<FormaDePagoScreen> {
               });
             }),
         RadioListTile(
-            activeColor: Colors.redAccent,
+            activeColor: Color(0xffA42B36),
             title: Text(Strings.TARJETA_DE_CREDITO),
             value: _paymentMethods[1],
             groupValue: _selectedPaymentMethod,
@@ -215,11 +215,13 @@ class _FormaDePagoScreenState extends State<FormaDePagoScreen> {
               child: DropdownButton<int>(
                   hint: new Text("Mes"),
                   value: selectedMonth,
-                  onChanged: (num newValue) {
-                    setState(() {
-                      selectedMonth = newValue;
-                    });
-                  },
+                  onChanged: _cardInformationEnabled
+                      ? (num newValue) {
+                          setState(() {
+                            selectedMonth = newValue;
+                          });
+                        }
+                      : null,
                   items: listMonths.map((int month) {
                     return new DropdownMenuItem<int>(
                       value: month,
@@ -234,11 +236,13 @@ class _FormaDePagoScreenState extends State<FormaDePagoScreen> {
                 child: DropdownButton<int>(
                     hint: new Text("Año"),
                     value: selectedYear,
-                    onChanged: (num newValue) {
-                      setState(() {
-                        selectedYear = newValue;
-                      });
-                    },
+                    onChanged: _cardInformationEnabled
+                        ? (num newValue) {
+                            setState(() {
+                              selectedYear = newValue;
+                            });
+                          }
+                        : null,
                     items: listYears.map((int year) {
                       return new DropdownMenuItem<int>(
                         value: year,
@@ -256,7 +260,7 @@ class _FormaDePagoScreenState extends State<FormaDePagoScreen> {
             maxLength: 3,
             enabled: _cardInformationEnabled,
             controller: _cardCodeFieldController,
-            keyboardType: TextInputType.datetime,
+            keyboardType: TextInputType.number,
             decoration: InputDecoration(
                 labelText: Strings.CODIGO_DE_SEGURIDAD,
                 errorText: error
@@ -264,6 +268,7 @@ class _FormaDePagoScreenState extends State<FormaDePagoScreen> {
                     : null),
           ),
         ),
+        
       ],
     );
   }

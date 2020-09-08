@@ -56,12 +56,7 @@ class PaymentInformationValidator extends ChangeNotifier {
 
   void _validateCardNumber(String cardNumber) {
     RegExp cardNumberRegex = RegExp(r'^4[0-9]{6,}$');
-    if (cardNumber.isEmpty) {
-      this.setCardNumberError = true;
-      this.setError = true;
-      this.setState = false;
-    }
-    if (!cardNumberRegex.hasMatch(cardNumber)) {
+    if (cardNumber.isEmpty || !cardNumberRegex.hasMatch(cardNumber)) {
       this.setCardNumberError = true;
       this.setError = true;
       this.setState = false;

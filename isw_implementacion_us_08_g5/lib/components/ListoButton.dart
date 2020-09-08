@@ -11,7 +11,7 @@ class ListoButton extends StatelessWidget {
     return Container(
       width: double.maxFinite,
       child: RaisedButton(
-        color: Colors.redAccent,
+        color: Color(0xffA42B36),
         onPressed: onPressed == null ? null : onPressed,
         child: Text(Strings.LISTO,
             style: TextStyle(fontSize: 20, color: Colors.white)),

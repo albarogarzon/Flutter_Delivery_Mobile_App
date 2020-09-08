@@ -43,7 +43,7 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       appBar: AppBar(
           title: Text(Strings.PEDI_LO_QUE_SEA),
-          backgroundColor: Colors.redAccent),
+          backgroundColor: Color(0xffA42B36)),
       body: Column(
         verticalDirection: VerticalDirection.down,
         textDirection: TextDirection.ltr,
@@ -67,7 +67,7 @@ class _MainScreenState extends State<MainScreen> {
                   subtitle: direccionRetiro.getCalle.isEmpty
                       ? null
                       : Text(direccionRetiro.getCalle),
-                  trailing: Icon(Icons.edit, color: Colors.redAccent),
+                  trailing: Icon(Icons.edit, color: Color(0xffA42B36)),
                   onTap: () {
                     Navigator.push(
                         context,
@@ -78,7 +78,7 @@ class _MainScreenState extends State<MainScreen> {
                 _divider,
                 ListTile(
                   title: Text(Strings.DONDE_LO_ENTREGAMOS),
-                  trailing: Icon(Icons.edit, color: Colors.redAccent),
+                  trailing: Icon(Icons.edit, color: Color(0xffA42B36)),
                   subtitle: _informacionEntrega.getDireccion.getCalle.isEmpty
                       ? null
                       : Text(_informacionEntrega.getDireccion.getCalle),
@@ -92,8 +92,10 @@ class _MainScreenState extends State<MainScreen> {
                 _divider,
                 ListTile(
                   title: Text(Strings.QUE_BUSCAMOS),
-                  trailing: Icon(Icons.edit, color: Colors.redAccent),
-                  subtitle: _productInformation.getDescripcion.isEmpty ? null:Text(_productInformation.getDescripcion),
+                  trailing: Icon(Icons.edit, color: Color(0xffA42B36)),
+                  subtitle: _productInformation.getDescripcion.isEmpty
+                      ? null
+                      : Text(_productInformation.getDescripcion),
                   onTap: () {
                     Navigator.push(
                         context,
@@ -104,7 +106,7 @@ class _MainScreenState extends State<MainScreen> {
                 _divider,
                 ListTile(
                   title: Text(Strings.CUANDO_QUERES_RECIBIRLO),
-                  trailing: Icon(Icons.edit, color: Colors.redAccent),
+                  trailing: Icon(Icons.edit, color: Color(0xffA42B36)),
                   subtitle: Text(
                       _deliveryTimeInformation.getSelectedTime.getTimeValue),
                   onTap: () {
@@ -118,7 +120,7 @@ class _MainScreenState extends State<MainScreen> {
                 _divider,
                 ListTile(
                   title: Text(Strings.FORMA_DE_PAGO),
-                  trailing: Icon(Icons.edit, color: Colors.redAccent),
+                  trailing: Icon(Icons.edit, color: Color(0xffA42B36)),
                   subtitle: _paymentInformation.getPaymentMethod == null
                       ? null
                       : Text(_paymentInformation.getPaymentMethod.getName),
@@ -146,7 +148,7 @@ class _MainScreenState extends State<MainScreen> {
                         fontSize: 16,
                         color: Colors.white),
                   ),
-                  color: Colors.redAccent,
+                  color: Color(0xffA42B36),
                   onPressed: _onPressedEnviar),
             ),
           )
@@ -158,6 +160,7 @@ class _MainScreenState extends State<MainScreen> {
   _onPressedEnviar() {
     if (_mainController.isValid()) {
       print("Enviando pedido");
+      _showFinalDialog();
     } else {
       switch (_mainController.whoIsNotReady()) {
         case Screens.DondeLoBuscamosScreen:
@@ -181,6 +184,34 @@ class _MainScreenState extends State<MainScreen> {
         default:
       }
     }
+  }
+
+  Future<void> _showFinalDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('¡Pedido Enviado!'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Su pedido fue procesado con éxito.'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Aceptar'),
+              color: Color(0xffA42B36),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }
 

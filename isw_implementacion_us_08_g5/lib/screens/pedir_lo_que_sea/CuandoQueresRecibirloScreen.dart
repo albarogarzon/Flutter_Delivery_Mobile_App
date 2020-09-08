@@ -64,7 +64,7 @@ class _CuandoQueresRecibirloScreenState
       appBar: AppBar(
           centerTitle: true,
           title: Text(Strings.CUANDO_QUERES_RECIBIRLO),
-          backgroundColor: Colors.redAccent),
+          backgroundColor: Color(0xffA42B36)),
       body: Container(
         height: double.maxFinite,
         width: double.maxFinite,
@@ -84,7 +84,7 @@ class _CuandoQueresRecibirloScreenState
                 },
                 itemBuilder: (BuildContext context, int index) {
                   return RadioListTile<TimeValue>(
-                      activeColor: Colors.redAccent,
+                      activeColor: Color(0xffA42B36),
                       title: Text(_options[index].getTimeValue),
                       value: _options[index],
                       groupValue: _selected,

@@ -45,7 +45,7 @@ class _QueBuscamosScreenState extends State<QueBuscamosScreen> {
       appBar: AppBar(
           centerTitle: true,
           title: Text(Strings.QUE_BUSCAMOS),
-          backgroundColor: Colors.redAccent),
+          backgroundColor: Color(0xffA42B36)),
       body: Container(
         height: double.maxFinite,
         width: double.maxFinite,
