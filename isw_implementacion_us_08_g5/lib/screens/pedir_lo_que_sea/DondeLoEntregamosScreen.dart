@@ -27,6 +27,10 @@ class _DondeLoEntregamosScreenState extends State<DondeLoEntregamosScreen> {
 
   DeliveryAddressInformationValidator _validator;
   DeliveryAddressInformation _informacionEntrega;
+
+  var currentSelectedCity = "Córdoba";
+  var cities = ["Córdoba", "Rio Ceballos", "Villa Allende"];
+
   @override
   void initState() {
     _validator = Provider.of<DeliveryAddressInformationValidator>(context,
@@ -85,6 +89,27 @@ class _DondeLoEntregamosScreenState extends State<DondeLoEntregamosScreen> {
             Expanded(
               child: ListView(
                 children: [
+                  Row(
+                    children: [
+                      Text('Ciudad: '),
+                      DropdownButton<String>(
+                        hint: Text("Ciudad"),
+                        value: currentSelectedCity,
+                        isDense: true,
+                        onChanged: (newValue) {
+                          setState(() {
+                            currentSelectedCity = newValue;
+                          });
+                        },
+                        items: cities.map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                      ),
+                    ],
+                  ),
                   _buildForm(),
                 ],
               ),
