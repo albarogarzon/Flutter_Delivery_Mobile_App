@@ -268,7 +268,6 @@ class _FormaDePagoScreenState extends State<FormaDePagoScreen> {
                     : null),
           ),
         ),
-        
       ],
     );
   }

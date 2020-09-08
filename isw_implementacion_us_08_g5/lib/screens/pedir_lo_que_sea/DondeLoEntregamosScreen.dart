@@ -89,27 +89,6 @@ class _DondeLoEntregamosScreenState extends State<DondeLoEntregamosScreen> {
             Expanded(
               child: ListView(
                 children: [
-                  Row(
-                    children: [
-                      Text('Ciudad: '),
-                      DropdownButton<String>(
-                        hint: Text("Ciudad"),
-                        value: currentSelectedCity,
-                        isDense: true,
-                        onChanged: (newValue) {
-                          setState(() {
-                            currentSelectedCity = newValue;
-                          });
-                        },
-                        items: cities.map((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                      ),
-                    ],
-                  ),
                   _buildForm(),
                 ],
               ),
@@ -134,6 +113,33 @@ class _DondeLoEntregamosScreenState extends State<DondeLoEntregamosScreen> {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisSize: MainAxisSize.max,
       children: [
+        Row(
+          children: <Widget>[
+            Flexible(
+              child: Text('Ciudad: ',style: TextStyle(fontSize: 16) ,),
+              flex: 1,
+            ),
+            Flexible(child:    DropdownButton<String>(
+              hint: Text("Ciudad",),
+              value: currentSelectedCity,
+              isDense: true,
+              onChanged: (newValue) {
+                setState(() {
+                  currentSelectedCity = newValue;
+                });
+              },
+              items: cities.map((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            ),
+            flex: 1,
+            )
+          ],
+        ),
+        _divider,
         Selector<DeliveryAddressInformationValidator, bool>(
           selector: (
             _,
