@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:isw_implementacion_us_08_g5/models/CreditCardInformation.dart';
 import 'package:isw_implementacion_us_08_g5/models/PaymentMethod.dart';
@@ -9,24 +10,28 @@ class PaymentInformation extends ChangeNotifier {
   String _amount;
   CreditCardInformation _creditCardInformation;
   bool _isReady;
+
   ProductInformation _productInformation;
   PaymentInformationValidator _paymentInformationValidator;
 
-  PaymentInformation(
-      this._productInformation, this._paymentInformationValidator) {
+  PaymentMethod _paymentMethod2;
+  String _amount2;
+  CreditCardInformation _creditCardInformation2;
+
+  PaymentInformation() {
     this._paymentMethod = null;
     this._amount = '';
     this._creditCardInformation = CreditCardInformation("", "", "", "");
     _isReady = false;
   }
 
-  bool validateInformation(
-    PaymentMethod paymentMethod,
-    String amount,
-    CreditCardInformation creditCardInformation,
-  ) {
-    return _paymentInformationValidator.validateInformation(
-        paymentMethod, amount, creditCardInformation);
+  void saveData(PaymentMethod paymentMethod, String amount,
+      CreditCardInformation creditCardInformation) {
+    this._amount = amount;
+    this._creditCardInformation = creditCardInformation;
+    this._paymentMethod = paymentMethod;
+    _isReady = true;
+    notifyListeners();
   }
 
   // Getters
@@ -44,9 +49,11 @@ class PaymentInformation extends ChangeNotifier {
 
   set setAmount(String amount) {
     this._amount = amount;
+    notifyListeners();
   }
 
   set setCreditCardInformation(CreditCardInformation creditCardInformation) {
     this._creditCardInformation = creditCardInformation;
+    notifyListeners();
   }
 }

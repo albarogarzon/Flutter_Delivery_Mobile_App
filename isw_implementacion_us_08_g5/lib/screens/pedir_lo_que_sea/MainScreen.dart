@@ -4,7 +4,9 @@ import 'package:isw_implementacion_us_08_g5/enums/screens_enum.dart';
 import 'package:isw_implementacion_us_08_g5/models/Direccion.dart';
 import 'package:isw_implementacion_us_08_g5/providers/DeliveryAddressInformation.dart';
 import 'package:isw_implementacion_us_08_g5/providers/DeliveryTimeInformation.dart';
+import 'package:isw_implementacion_us_08_g5/providers/PaymentInformation.dart';
 import 'package:isw_implementacion_us_08_g5/providers/PickupAddressInformation.dart';
+import 'package:isw_implementacion_us_08_g5/providers/ProductInformation.dart';
 import 'package:isw_implementacion_us_08_g5/resources/Strings.dart';
 import 'package:isw_implementacion_us_08_g5/screens/pedir_lo_que_sea/FormaDePagoScreen.dart';
 import 'package:isw_implementacion_us_08_g5/screens/pedir_lo_que_sea/QueBuscamosScreen.dart';
@@ -21,11 +23,10 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   PickupAddressInformation _direccionRetiroProvider;
-
   DeliveryAddressInformation _informacionEntrega;
-
   DeliveryTimeInformation _deliveryTimeInformation;
-
+  PaymentInformation _paymentInformation;
+  ProductInformation _productInformation;
   MainController _mainController;
 
   @override
@@ -34,6 +35,9 @@ class _MainScreenState extends State<MainScreen> {
     _informacionEntrega = Provider.of<DeliveryAddressInformation>(context);
     _mainController = Provider.of<MainController>(context);
     _deliveryTimeInformation = Provider.of<DeliveryTimeInformation>(context);
+    _paymentInformation = Provider.of<PaymentInformation>(context);
+    _productInformation = Provider.of<ProductInformation>(context);
+
     Direccion direccionRetiro = _direccionRetiroProvider.getDireccion;
 
     return Scaffold(
@@ -89,6 +93,7 @@ class _MainScreenState extends State<MainScreen> {
                 ListTile(
                   title: Text(Strings.QUE_BUSCAMOS),
                   trailing: Icon(Icons.edit, color: Colors.redAccent),
+                  subtitle: _productInformation.getDescripcion.isEmpty ? null:Text(_productInformation.getDescripcion),
                   onTap: () {
                     Navigator.push(
                         context,
@@ -114,6 +119,9 @@ class _MainScreenState extends State<MainScreen> {
                 ListTile(
                   title: Text(Strings.FORMA_DE_PAGO),
                   trailing: Icon(Icons.edit, color: Colors.redAccent),
+                  subtitle: _paymentInformation.getPaymentMethod == null
+                      ? null
+                      : Text(_paymentInformation.getPaymentMethod.getName),
                   onTap: () {
                     Navigator.push(
                         context,

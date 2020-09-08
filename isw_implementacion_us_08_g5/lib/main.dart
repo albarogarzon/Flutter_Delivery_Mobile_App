@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:isw_implementacion_us_08_g5/controllers/MainController.dart';
 import 'package:isw_implementacion_us_08_g5/providers/DeliveryAddressInformation.dart';
 import 'package:isw_implementacion_us_08_g5/providers/DeliveryTimeInformation.dart';
@@ -10,6 +11,7 @@ import 'package:isw_implementacion_us_08_g5/screens/pedir_lo_que_sea/MainScreen.
 import 'package:isw_implementacion_us_08_g5/validators/DeliveryAddressInformationValidator.dart';
 import 'package:isw_implementacion_us_08_g5/validators/PaymentInformationValidator.dart';
 import 'package:isw_implementacion_us_08_g5/validators/PickupAddressInformationValidator.dart';
+import 'package:isw_implementacion_us_08_g5/validators/ProductInformationValidator.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/PickupAddressInformation.dart';
@@ -23,6 +25,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(
+            create: (BuildContext context) => ProductInformationValidator()),
         ChangeNotifierProvider.value(
             value: PickupAddressInformationValidator()),
         ChangeNotifierProvider.value(
@@ -36,13 +40,8 @@ class MyApp extends StatelessWidget {
             create: (BuildContext context) => DeliveryTimeInformation()),
         ChangeNotifierProvider<ProductInformation>(
             create: (BuildContext context) => ProductInformation()),
-        ChangeNotifierProxyProvider2<ProductInformation,
-                PaymentInformationValidator, PaymentInformation>(
-            create: (BuildContext context) => PaymentInformation(null, null),
-            update: (context, productInformation, paymentInformationValidator,
-                    paymentInformation) =>
-                PaymentInformation(
-                    productInformation, paymentInformationValidator)),
+        ChangeNotifierProvider(
+            create: (BuildContext context) => PaymentInformation()),
         ChangeNotifierProxyProvider4<
                 PickupAddressInformation,
                 DeliveryAddressInformation,
@@ -63,7 +62,7 @@ class MyApp extends StatelessWidget {
                     productInformation,
                     paymentInformation))
       ],
-      child: MaterialApp(
+      child: GetMaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
           primarySwatch: Colors.blue,

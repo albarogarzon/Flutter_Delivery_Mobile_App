@@ -1,8 +1,14 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:isw_implementacion_us_08_g5/components/ListoButton.dart';
+import 'package:isw_implementacion_us_08_g5/providers/ProductInformation.dart';
 import 'package:isw_implementacion_us_08_g5/resources/Strings.dart';
+import 'package:isw_implementacion_us_08_g5/validators/ProductInformationValidator.dart';
+import 'package:provider/provider.dart';
 
 class QueBuscamosScreen extends StatefulWidget {
   QueBuscamosScreen({Key key}) : super(key: key);
@@ -12,22 +18,30 @@ class QueBuscamosScreen extends StatefulWidget {
 }
 
 class _QueBuscamosScreenState extends State<QueBuscamosScreen> {
+  TextEditingController _descripcionController;
+  ProductInformation _productInformation;
+  ProductInformationValidator _validator;
+
   File _image;
   final picker = ImagePicker();
 
-  Future getImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
-    final bytes = await pickedFile.readAsBytes();
-    print("BYTES:${bytes.length}");
-    setState(() {
-      _image = File(pickedFile.path);
-    });
+  @override
+  void initState() {
+    _validator =
+        Provider.of<ProductInformationValidator>(context, listen: false);
+    _productInformation =
+        Provider.of<ProductInformation>(context, listen: false);
+    _descripcionController =
+        TextEditingController(text: _productInformation.getDescripcion);
+    _image = _productInformation.getImage;
+
+    _validator.setStateWithoutNotify = true;
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       appBar: AppBar(
           centerTitle: true,
           title: Text(Strings.QUE_BUSCAMOS),
@@ -42,40 +56,65 @@ class _QueBuscamosScreenState extends State<QueBuscamosScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
           children: [
-            TextField(
-              decoration: InputDecoration(labelText: 'Ingresá una descripción'),
-            ),
-            _buildTitle(),
-            _divider,
-            GridView.count(
-              shrinkWrap: true,
-              primary: false,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
-              crossAxisCount: 3,
-              children: <Widget>[
-                GestureDetector(
-                  //-----------------------------------ACA
-                  onTap: getImage,
-                  child: Container(
-                    color: Colors.black12,
-                    child: _image == null || checkFileSize(_image.path) == false
-                        ? Icon(Icons.add)
-                        : Image.file(_image),
+            Expanded(
+              child: ListView(
+                children: [
+                  Selector<ProductInformationValidator, bool>(
+                    selector: (_, validator) => validator.getDescripcionState,
+                    builder: (_, descripcionState, __) => TextField(
+                      controller: _descripcionController,
+                      decoration: InputDecoration(
+                          labelText: 'Ingresá una descripción',
+                          errorText: descripcionState
+                              ? null
+                              : "Debe ingresar una descripción del producto"),
+                    ),
                   ),
-                ),
-              ],
+                  _buildTitle(),
+                  _divider,
+                  GridView.count(
+                    shrinkWrap: true,
+                    primary: false,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                    crossAxisCount: 3,
+                    children: <Widget>[
+                      GestureDetector(
+                        onTap: getImage,
+                        child: Container(
+                          color: Colors.black12,
+                          child: _image == null ||
+                                  checkFileSize(_image.path, context) == false
+                              ? Icon(Icons.add)
+                              : Image.file(_image),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-            Spacer(),
-            _buildSubmitButton()
+            ListoButton(
+              onPressed: _listo,
+            ),
           ],
         ),
       ),
     );
   }
 
-  checkFileSize(path) {
-    print("Entro a check");
+  _listo() {
+    String descripcion = _descripcionController.text;
+    if (_validator.validateInformation(descripcion)) {
+      _productInformation.saveData(descripcion, _image);
+      Navigator.pop(context);
+    } else {
+      return;
+    }
+  }
+
+  checkFileSize(path, contexto) {
+    print("Entro a check.PATH: ${path}");
     var fileSizeLimit = 5000000;
     File f = new File(path);
     var s = f.lengthSync();
@@ -83,9 +122,9 @@ class _QueBuscamosScreenState extends State<QueBuscamosScreen> {
     var fileSizeInKB = s / 1024;
     // Convert the KB to MegaBytes (1 MB = 1024 KBytes)
     var fileSizeInMB = fileSizeInKB / 1024;
-
     if (s > fileSizeLimit) {
       print("File size greater than the limit$s");
+
       return false;
     } else {
       print("File can be selected$s");
@@ -93,16 +132,14 @@ class _QueBuscamosScreenState extends State<QueBuscamosScreen> {
     }
   }
 
-  _buildSubmitButton() {
-    return Container(
-      width: double.maxFinite,
-      child: RaisedButton(
-        color: Colors.redAccent,
-        onPressed: () {},
-        child: const Text('Listo',
-            style: TextStyle(fontSize: 20, color: Colors.white)),
-      ),
+  Future getImage() async {
+    List<File> pickedFile = await FilePicker.getMultiFile(
+      type: FileType.custom,
+      allowedExtensions: ['jpg'],
     );
+    setState(() {
+      _image = File(pickedFile[0].path);
+    });
   }
 
   _buildTitle() {

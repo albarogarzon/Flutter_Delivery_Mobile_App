@@ -8,7 +8,6 @@ import 'package:isw_implementacion_us_08_g5/providers/PickupAddressInformation.d
 import 'package:isw_implementacion_us_08_g5/resources/Strings.dart';
 import 'package:isw_implementacion_us_08_g5/validators/PaymentInformationValidator.dart';
 import 'package:provider/provider.dart';
-import 'package:credit_card_validate/credit_card_validate.dart';
 
 class FormaDePagoScreen extends StatefulWidget {
   FormaDePagoScreen();
@@ -76,9 +75,6 @@ class _FormaDePagoScreenState extends State<FormaDePagoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Direccion direccionRetiro =
-        Provider.of<PickupAddressInformation>(context).getDireccion;
-
     return Scaffold(
       appBar: AppBar(
           title: Text("Formas De Pago"), backgroundColor: Colors.redAccent),
@@ -129,6 +125,7 @@ class _FormaDePagoScreenState extends State<FormaDePagoScreen> {
                 _selectedPaymentMethod = paymentMethod;
                 _amoutTextFieldEnabled = true;
                 _cardInformationEnabled = false;
+                _emptyFields();
               });
             }),
         RadioListTile(
@@ -142,10 +139,19 @@ class _FormaDePagoScreenState extends State<FormaDePagoScreen> {
                 _selectedPaymentMethod = paymentMethod;
                 _amoutTextFieldEnabled = false;
                 _cardInformationEnabled = true;
+                _emptyFields();
               });
             })
       ],
     );
+  }
+
+  _emptyFields() {
+    _amountFieldController.text = "";
+    _cardExpirationDateFieldController.text = "";
+    _cardNameFieldController.text = "";
+    _cardNumberFieldController.text = "";
+    _cardCodeFieldController.text = "";
   }
 
   _buildPaymentInformation() {
@@ -242,8 +248,14 @@ class _FormaDePagoScreenState extends State<FormaDePagoScreen> {
         _cardExpirationDateFieldController.text,
         _cardCodeFieldController.text);
 
-    _paymentInformation.validateInformation(
-        _selectedPaymentMethod, amount, creditCardInformation);
+    if (_validator.validateInformation(
+        _selectedPaymentMethod, amount, creditCardInformation)) {
+      _paymentInformation.saveData(
+          _selectedPaymentMethod, amount, creditCardInformation);
+      Navigator.pop(context);
+    } else {
+      return;
+    }
   }
 
   _setErrorsToFalse() {

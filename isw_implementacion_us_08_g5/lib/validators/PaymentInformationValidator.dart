@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:isw_implementacion_us_08_g5/models/CreditCardInformation.dart';
 import 'package:isw_implementacion_us_08_g5/models/PaymentMethod.dart';
-import 'package:isw_implementacion_us_08_g5/providers/PaymentInformation.dart';
 
 class PaymentInformationValidator extends ChangeNotifier {
   bool _error;
@@ -10,7 +9,7 @@ class PaymentInformationValidator extends ChangeNotifier {
   bool _cardNameError;
   bool _cardExpirationDateError;
   bool _cardCodeError;
-
+  bool _state;
   static const EFECTIVO = 0;
   static const TARJETA = 1;
   static final List<PaymentMethod> _paymentMethods = [
@@ -19,6 +18,7 @@ class PaymentInformationValidator extends ChangeNotifier {
   ];
 
   PaymentInformationValidator() {
+    _state = false;
     _error = false;
     _amountError = false;
     _cardNumberError = false;
@@ -39,16 +39,18 @@ class PaymentInformationValidator extends ChangeNotifier {
         _validateCardCode(creditCardInformation.getCvc);
       }
     }
-    return _error;
+    return _state;
   }
 
   void _validateAmount(String amount) {
     if (amount.isEmpty) {
       this.setAmountError = true;
       this.setError = true;
+      this.setState = false;
     } else {
       this.setAmountError = false;
       this.setError = false;
+      this.setState = true;
     }
   }
 
@@ -57,13 +59,16 @@ class PaymentInformationValidator extends ChangeNotifier {
     if (cardNumber.isEmpty) {
       this.setCardNumberError = true;
       this.setError = true;
+      this.setState = false;
     }
     if (!cardNumberRegex.hasMatch(cardNumber)) {
       this.setCardNumberError = true;
       this.setError = true;
+      this.setState = false;
     } else {
       this.setCardNumberError = false;
       this.setError = false;
+      this.setState = true;
     }
   }
 
@@ -71,9 +76,11 @@ class PaymentInformationValidator extends ChangeNotifier {
     if (cardName.isEmpty) {
       this.setCardNameError = true;
       this.setError = true;
+      this.setState = false;
     } else {
       this.setCardNameError = false;
       this.setError = false;
+      this.setState = true;
     }
   }
 
@@ -81,9 +88,11 @@ class PaymentInformationValidator extends ChangeNotifier {
     if (expirationDate.isEmpty) {
       this.setCardExpirationDateError = true;
       this.setError = true;
+      this.setState = false;
     } else {
       this.setCardExpirationDateError = false;
       this.setError = false;
+      this.setState = true;
     }
   }
 
@@ -91,9 +100,11 @@ class PaymentInformationValidator extends ChangeNotifier {
     if (cardCode.isEmpty) {
       this.setCardCodeError = true;
       this.setError = true;
+      this.setState = false;
     } else {
       this.setCardCodeError = false;
       this.setError = false;
+      this.setState = true;
     }
   }
 
@@ -107,6 +118,11 @@ class PaymentInformationValidator extends ChangeNotifier {
   // Setters
   set setError(bool value) {
     this._error = value;
+    notifyListeners();
+  }
+
+  set setState(bool value) {
+    this._state = value;
     notifyListeners();
   }
 
