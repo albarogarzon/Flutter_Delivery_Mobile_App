@@ -12,6 +12,12 @@ class FormasDePagoScreen extends StatefulWidget {
 }
 
 class _FormasDePagoScreenState extends State<FormasDePagoScreen> {
+  //--------------------------------ACA
+  int selectedYear;
+  int selectedMonth;
+  var listYears = new List<int>.generate(10, (i) => i + 2020);
+  var listMonths = new List<int>.generate(12, (i) => i + 01);
+
   final List<String> listItemTitles = [
     "Crea tu pedido",
     "¿Qué buscamos?",
@@ -81,7 +87,10 @@ class _FormasDePagoScreenState extends State<FormasDePagoScreen> {
               creditCardNumber.length < 16
                   ? Text('Por favor ingrese por lo menos 16 números')
                   : CreditCardValidator.isCreditCardValid(
-                          cardNumber: creditCardNumber) && CreditCardValidator.identifyCardBrand(creditCardNumber) == 'visa'
+                              cardNumber: creditCardNumber) &&
+                          CreditCardValidator.identifyCardBrand(
+                                  creditCardNumber) ==
+                              'visa'
                       ? Text(
                           'La tarjeta de crédito es válida',
                           style: TextStyle(color: Colors.green),
@@ -131,6 +140,51 @@ class _FormasDePagoScreenState extends State<FormasDePagoScreen> {
                       'La fecha de vencimiento es válida',
                       style: TextStyle(color: Colors.green),
                     ),
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: DropdownButton<int>(
+                        //--------------------------------ACAAAAAAAAAAAAAAA MES
+                        hint: new Text("Mes"),
+                        value: selectedMonth,
+                        onChanged: (num newValue) {
+                          setState(() {
+                            selectedMonth = newValue;
+                          });
+                        },
+                        items: listMonths.map((int month) {
+                          return new DropdownMenuItem<int>(
+                            value: month,
+                            child: new Text(
+                              month.toString(),
+                              style: new TextStyle(color: Colors.black),
+                            ),
+                          );
+                        }).toList()),
+                  ),
+                  Expanded(
+                      child: DropdownButton<int>(
+                          //--------------------------------ACAAAAAAAAAAAAAAA AÑO
+                          hint: new Text("Año"),
+                          value: selectedYear,
+                          onChanged: (num newValue) {
+                            setState(() {
+                              selectedYear = newValue;
+                            });
+                          },
+                          items: listYears.map((int year) {
+                            return new DropdownMenuItem<int>(
+                              value: year,
+                              child: new Text(
+                                year.toString(),
+                                style: new TextStyle(color: Colors.black),
+                              ),
+                            );
+                          }).toList())
+                          
+                          )
+                ],
+              ),
             ],
           ),
         ),
@@ -159,6 +213,21 @@ class _FormasDePagoScreenState extends State<FormasDePagoScreen> {
     );
   }
 }
+/*
+TextField(
+            maxLength: 7,
+            enabled: _cardInformationEnabled,
+            controller: _cardExpirationDateFieldController,
+            keyboardType: TextInputType.datetime,
+            onChanged: null,
+            decoration: InputDecoration(
+                labelText: Strings.FECHA_DE_VENCIMIENTO,
+                errorText: error
+                    ? "Debe ingresar la fecha de vencimiento de la tarjeta"
+                    : null),
+          ),
+
+*/
 
 // Define a custom Form widget.
 class MyCustomForm extends StatefulWidget {

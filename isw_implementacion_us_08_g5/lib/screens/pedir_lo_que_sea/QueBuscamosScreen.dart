@@ -18,14 +18,14 @@ class _QueBuscamosScreenState extends State<QueBuscamosScreen> {
 
   Future getImage() async {
     //final pickedFile = await picker.getImage(source: ImageSource.gallery);
-    List<File> pickedFile = await FilePicker.getMultiFile(
+    File pickedFile = await FilePicker.getFile(
           type: FileType.custom,
           allowedExtensions: ['jpg'],
         );
     //final bytes = await pickedFile.readAsBytes();
     //print("BYTES:${bytes.length}");
     setState(() {
-      _image = File(pickedFile[0].path);
+      _image = File(pickedFile.path);
     });
   }
 
