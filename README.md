@@ -2,7 +2,7 @@
 Implementacion con Flutter y Provider Pattern de user story "Realizar pedido de lo que sea", Materia Ingenieria de software.
 
 # Screenshots de la aplicacion
-![Main Screen](MainScreen.png)
+![Main Screen](MainScreen.png) ![Main Screen](MainScreen2.png)
 
 # User Story
 ## Realizar pedido de "lo que sea"
