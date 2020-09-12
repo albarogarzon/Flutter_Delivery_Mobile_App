@@ -2,7 +2,8 @@
 Implementacion con Flutter y Provider Pattern de user story "Realizar pedido de lo que sea", Materia Ingenieria de software.
 
 # Screenshots de la aplicacion
-<img src="MainScreen.png" width="40%"> <img src="MainScreen2.png" width="40%">.
+<img src="MainScreen.png" width="40%"> <img src="AddressScreen.png" width="40%"> <img src="ProductScreen.png" width="40%">
+<img src="TimeScreen.png" width="40%"> <img src="PaymentScreen.png" width="40%"> <img src="MainScreen2.png" width="40%">
 
 # User Story
 ## Realizar pedido de "lo que sea"
